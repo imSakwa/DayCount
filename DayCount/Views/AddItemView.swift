@@ -143,8 +143,8 @@ class AddItemView: UIViewController{
             }
         
             mainVC.ddayList.append(DDay(title: titleTextField.text!, date: dateTextField.text!, isSwitchOn: switchOn))
+            mainVC.getDataAndPutItem()
             self.dismiss(animated: true, completion: nil)
-            
         }
     }
         
@@ -168,18 +168,7 @@ class AddItemView: UIViewController{
         dateFormatter.dateFormat = "d"
         datePickerView.selectRow(Int(dateFormatter.string(from: Date()))!-1, inComponent: 2, animated: false)
     }
-    
-    // 뷰가 사라지면서 itemView를 stackview에 넣음
-    override func viewWillDisappear(_ animated: Bool) {
-        guard let mainVC = self.presentingViewController as? MainViewController  else {
-            return
-        }
-        if titleTextField.text != ""{
-            if dateTextField.text != "" {
-                mainVC.getDataAndPutItem()
-            }
-        }
-    }
+
 }
 
 
