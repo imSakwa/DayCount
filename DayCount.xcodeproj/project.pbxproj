@@ -17,6 +17,7 @@
 		76A6162C265792CE006570B4 /* DDay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76A6162B265792CE006570B4 /* DDay.swift */; };
 		76A6162F26579324006570B4 /* ItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76A6162E26579324006570B4 /* ItemView.swift */; };
 		76A6163126579359006570B4 /* AddItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76A6163026579359006570B4 /* AddItemView.swift */; };
+		76CFC8A4268A04D000AACDE4 /* ItemViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76CFC8A3268A04D000AACDE4 /* ItemViewModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -53,6 +54,7 @@
 		76A6162B265792CE006570B4 /* DDay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DDay.swift; sourceTree = "<group>"; };
 		76A6162E26579324006570B4 /* ItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemView.swift; sourceTree = "<group>"; };
 		76A6163026579359006570B4 /* AddItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddItemView.swift; sourceTree = "<group>"; };
+		76CFC8A3268A04D000AACDE4 /* ItemViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -104,6 +106,7 @@
 			isa = PBXGroup;
 			children = (
 				76A6162A265792B3006570B4 /* Models */,
+				76CFC8A2268A04B700AACDE4 /* ViewModel */,
 				76A6162D265792EB006570B4 /* Views */,
 				76A615FA26579272006570B4 /* AppDelegate.swift */,
 				76A615FC26579272006570B4 /* SceneDelegate.swift */,
@@ -148,6 +151,14 @@
 				76A6163026579359006570B4 /* AddItemView.swift */,
 			);
 			path = Views;
+			sourceTree = "<group>";
+		};
+		76CFC8A2268A04B700AACDE4 /* ViewModel */ = {
+			isa = PBXGroup;
+			children = (
+				76CFC8A3268A04D000AACDE4 /* ItemViewModel.swift */,
+			);
+			path = ViewModel;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -282,6 +293,7 @@
 				76A615FF26579272006570B4 /* MainViewController.swift in Sources */,
 				76A6163126579359006570B4 /* AddItemView.swift in Sources */,
 				76A615FB26579272006570B4 /* AppDelegate.swift in Sources */,
+				76CFC8A4268A04D000AACDE4 /* ItemViewModel.swift in Sources */,
 				76A615FD26579272006570B4 /* SceneDelegate.swift in Sources */,
 				76A6162F26579324006570B4 /* ItemView.swift in Sources */,
 				76A6162C265792CE006570B4 /* DDay.swift in Sources */,
@@ -452,17 +464,20 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = P9MW78T4QB;
 				INFOPLIST_FILE = DayCount/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.1;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.Chang.DayCount;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ChangMin.DayCount;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = dev_DayCount;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -471,17 +486,20 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = P9MW78T4QB;
 				INFOPLIST_FILE = DayCount/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.1;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.Chang.DayCount;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ChangMin.DayCount;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = DayCount;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};
