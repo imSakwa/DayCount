@@ -5,6 +5,8 @@
 //  Created by 창민 on 2021/05/21.
 //
 
+import RxCocoa
+import RxSwift
 import UIKit
 
 class AddItemView: UIViewController{
@@ -12,17 +14,16 @@ class AddItemView: UIViewController{
     var titles:[String] = []
     var dates: [String] = []
     var switchOn: Bool = false
-    
     let days = [["2021","2022","2023","2024","2025","2026","2027","2028","2029","2030"],["1","2","3","4","5","6","7","8","9","10","11","12"],["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31"]]
     
-    
-    
+    let viewModel = ItemViewModel()
+    let disposebag = DisposeBag()
+
     var titleTextField: UITextField = {
         let textField = UITextField()
         textField.translatesAutoresizingMaskIntoConstraints = false
         textField.attributedPlaceholder = NSAttributedString(string: "디데이 제목", attributes: [NSAttributedString.Key.foregroundColor : #colorLiteral(red: 0.5966893435, green: 0.5931452513, blue: 0.5994156003, alpha: 1)])
         textField.textFieldConfig(view: textField)
-    
         return textField
     }()
     
@@ -32,7 +33,6 @@ class AddItemView: UIViewController{
         stackView.distribution = .fill
         stackView.spacing = 15
         stackView.translatesAutoresizingMaskIntoConstraints = false
-        
         return stackView
     }()
     
@@ -66,14 +66,59 @@ class AddItemView: UIViewController{
     
     var doneBtn: UIButton = {
         let button = UIButton(type: .custom)
-        button.backgroundColor = .systemBlue
         button.tintColor = .white
         button.setTitle("추가하기", for: .normal)
         button.layer.cornerRadius = 10
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.addTarget(self, action: #selector(doneBtnClicked), for: .touchUpInside)
+        button.backgroundColor = .systemGray2
         return button
     }()
+    
+    func bind(){
+        // Input
+        titleTextField.rx.text
+            .orEmpty
+            .bind(to: viewModel.input.title)
+            .disposed(by: disposebag)
+        
+        dateTextField.rx.text
+            .orEmpty
+            .bind(to: viewModel.input.date)
+            .disposed(by: disposebag)
+        
+        upDownSwitch.rx.isOn
+            .bind(to: viewModel.input.isSwitchOn)
+            .disposed(by: disposebag)
+        
+        doneBtn.rx.tap
+            .bind(to: viewModel.input.tapDone)
+            .disposed(by: disposebag)
+        
+        // Output
+        viewModel.output.enableDoneButton
+            .drive(doneBtn.rx.isEnabled)
+            .disposed(by: disposebag)
+        
+        viewModel.output.enableDoneButton
+            .asObservable()
+            .subscribe(onNext: { [weak self] value in
+                if value {
+                    self?.doneBtn.backgroundColor = .systemBlue
+                } else {
+                    self?.doneBtn.backgroundColor = .systemGray2
+                }
+            })
+            .disposed(by: disposebag)
+        
+        viewModel.output.goToMain
+            .bind(onNext: goToMain)
+            .disposed(by: disposebag)
+
+    }
+        
+    func goToMain(){
+        self.dismiss(animated: true, completion: nil)
+    }
     
     func setLayout(){
         view.addSubview(titleTextField)
@@ -121,42 +166,16 @@ class AddItemView: UIViewController{
         }
     }
     
-    // 메인 뷰로 추가된 디데이의 제목과 날짜를 추가
-    @objc func doneBtnClicked(){
-        let okAction = UIAlertAction(title: "확인", style: .default) { (action) in
-            
-        }
-        
-        if titleTextField.text == "" {
-            let alert = UIAlertController(title: "", message: "제목을 입력해주세요.", preferredStyle: .alert)
-            alert.addAction(okAction)
-            present(alert, animated: true, completion: nil)
-        }
-        else if dateTextField.text == "" {
-            let alert = UIAlertController(title: "", message: "날짜를 입력해주세요.", preferredStyle: .alert)
-            alert.addAction(okAction)
-            present(alert, animated: true, completion: nil)
-        }
-        else {
-            guard let mainVC = self.presentingViewController as? MainViewController  else {
-                return
-            }
-        
-            mainVC.ddayList.append(DDay(title: titleTextField.text!, date: dateTextField.text!, isSwitchOn: switchOn))
-            mainVC.getDataAndPutItem()
-            self.dismiss(animated: true, completion: nil)
-        }
-    }
         
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         self.view.endEditing(true)
     }
     
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = .white
         
+        bind()
         setLayout()
         datePickerView.delegate = self
         datePickerView.dataSource = self
