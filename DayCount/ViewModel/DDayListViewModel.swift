@@ -8,7 +8,7 @@
 import RxCocoa
 import RxSwift
 
-class ItemViewModel {
+class DDayListVIewModel {
     struct Input {
         let tapDone = PublishSubject<Void>() 
         let title = PublishSubject<String>()
@@ -38,7 +38,6 @@ class ItemViewModel {
         // 버튼을 누르면 addDDay 메서드 실행
         input.tapDone.withLatestFrom(Observable.combineLatest(input.title, input.date, input.isSwitchOn))
             .bind { [weak self] (title, date, isSwitchOn) in
-                print("\(title), \(date), \(isSwitchOn)")
                 var date = date
                 if isSwitchOn {
                     let format_date = DateFormatter()
@@ -62,25 +61,6 @@ class ItemViewModel {
         self.output.list.accept(dday)
         self.output.goToMain.accept(())
     }
-    
-    // dday 계산 메서드
-    func calcDDay(date: String, isSwitchOn: Bool) -> Int{
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy년 MM월 dd일"
-        dateFormatter.locale = Locale(identifier: "ko_KR")
-        dateFormatter.timeZone = TimeZone(abbreviation: "UTC") as TimeZone?
-        let todayDate: Date = dateFormatter.date(from: dateFormatter.string(from: Date()))!
-        let textFieldDate: Date = dateFormatter.date(from: date)!
-        
-        var interval: TimeInterval
-        if isSwitchOn {
-            interval = todayDate.timeIntervalSince(textFieldDate)
-        } else {
-            interval = textFieldDate.timeIntervalSince(todayDate)
-        }
-        return Int(interval/86400)
-    }
-
 }
 
 // 디데이 항목 세이브 메서드

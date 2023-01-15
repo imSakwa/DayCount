@@ -3,23 +3,26 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 51;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
 		47BB039A843F1E325F3484EE /* Pods_DayCountTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7ED0E30898F7CA3B0AA4C220 /* Pods_DayCountTests.framework */; };
+		76A566882973E35E008CAA22 /* RxCocoa in Frameworks */ = {isa = PBXBuildFile; productRef = 76A566872973E35E008CAA22 /* RxCocoa */; };
+		76A5668A2973E35E008CAA22 /* RxRelay in Frameworks */ = {isa = PBXBuildFile; productRef = 76A566892973E35E008CAA22 /* RxRelay */; };
+		76A5668C2973E35E008CAA22 /* RxSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 76A5668B2973E35E008CAA22 /* RxSwift */; };
+		76A5668E2973EE1C008CAA22 /* DDayListItemViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76A5668D2973EE1C008CAA22 /* DDayListItemViewModel.swift */; };
 		76A615FB26579272006570B4 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76A615FA26579272006570B4 /* AppDelegate.swift */; };
 		76A615FD26579272006570B4 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76A615FC26579272006570B4 /* SceneDelegate.swift */; };
-		76A615FF26579272006570B4 /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76A615FE26579272006570B4 /* MainView.swift */; };
+		76A615FF26579272006570B4 /* DDayListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76A615FE26579272006570B4 /* DDayListViewController.swift */; };
 		76A6160426579274006570B4 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 76A6160326579274006570B4 /* Assets.xcassets */; };
 		76A6160726579274006570B4 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 76A6160526579274006570B4 /* LaunchScreen.storyboard */; };
 		76A6161226579274006570B4 /* DayCountTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76A6161126579274006570B4 /* DayCountTests.swift */; };
 		76A6161D26579274006570B4 /* DayCountUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76A6161C26579274006570B4 /* DayCountUITests.swift */; };
 		76A6162C265792CE006570B4 /* DDay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76A6162B265792CE006570B4 /* DDay.swift */; };
-		76A6162F26579324006570B4 /* ItemTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76A6162E26579324006570B4 /* ItemTableViewCell.swift */; };
+		76A6162F26579324006570B4 /* DDayListItemTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76A6162E26579324006570B4 /* DDayListItemTableViewCell.swift */; };
 		76A6163126579359006570B4 /* AddItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76A6163026579359006570B4 /* AddItemView.swift */; };
-		76A6381126944DA70013273A /* MainViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76A6381026944DA70013273A /* MainViewModel.swift */; };
-		76CFC8A4268A04D000AACDE4 /* ItemViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76CFC8A3268A04D000AACDE4 /* ItemViewModel.swift */; };
+		76CFC8A4268A04D000AACDE4 /* DDayListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76CFC8A3268A04D000AACDE4 /* DDayListViewModel.swift */; };
 		9F0936D90A84298DD99690E4 /* Pods_DayCount_DayCountUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 36E92ECB0BD2B97627B238D6 /* Pods_DayCount_DayCountUITests.framework */; };
 		C3211FBF42B1CE3BC59C8420 /* Pods_DayCount.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 11790DD23A8C6718C025821D /* Pods_DayCount.framework */; };
 /* End PBXBuildFile section */
@@ -46,10 +49,11 @@
 		11790DD23A8C6718C025821D /* Pods_DayCount.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_DayCount.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		36E92ECB0BD2B97627B238D6 /* Pods_DayCount_DayCountUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_DayCount_DayCountUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		4F7AA47ECD97AAA2EA5B5E23 /* Pods-DayCount.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DayCount.release.xcconfig"; path = "Target Support Files/Pods-DayCount/Pods-DayCount.release.xcconfig"; sourceTree = "<group>"; };
+		76A5668D2973EE1C008CAA22 /* DDayListItemViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DDayListItemViewModel.swift; sourceTree = "<group>"; };
 		76A615F726579272006570B4 /* DayCount.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DayCount.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		76A615FA26579272006570B4 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		76A615FC26579272006570B4 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
-		76A615FE26579272006570B4 /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
+		76A615FE26579272006570B4 /* DDayListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DDayListViewController.swift; sourceTree = "<group>"; };
 		76A6160326579274006570B4 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		76A6160626579274006570B4 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		76A6160826579274006570B4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -60,10 +64,9 @@
 		76A6161C26579274006570B4 /* DayCountUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DayCountUITests.swift; sourceTree = "<group>"; };
 		76A6161E26579274006570B4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		76A6162B265792CE006570B4 /* DDay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DDay.swift; sourceTree = "<group>"; };
-		76A6162E26579324006570B4 /* ItemTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemTableViewCell.swift; sourceTree = "<group>"; };
+		76A6162E26579324006570B4 /* DDayListItemTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DDayListItemTableViewCell.swift; sourceTree = "<group>"; };
 		76A6163026579359006570B4 /* AddItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddItemView.swift; sourceTree = "<group>"; };
-		76A6381026944DA70013273A /* MainViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewModel.swift; sourceTree = "<group>"; };
-		76CFC8A3268A04D000AACDE4 /* ItemViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemViewModel.swift; sourceTree = "<group>"; };
+		76CFC8A3268A04D000AACDE4 /* DDayListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DDayListViewModel.swift; sourceTree = "<group>"; };
 		7742184D1A5737FD131F8068 /* Pods-DayCountTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DayCountTests.release.xcconfig"; path = "Target Support Files/Pods-DayCountTests/Pods-DayCountTests.release.xcconfig"; sourceTree = "<group>"; };
 		7ED0E30898F7CA3B0AA4C220 /* Pods_DayCountTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_DayCountTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		BC1EC686E544431C8A71D282 /* Pods-DayCount-DayCountUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DayCount-DayCountUITests.release.xcconfig"; path = "Target Support Files/Pods-DayCount-DayCountUITests/Pods-DayCount-DayCountUITests.release.xcconfig"; sourceTree = "<group>"; };
@@ -76,6 +79,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				76A5668A2973E35E008CAA22 /* RxRelay in Frameworks */,
+				76A566882973E35E008CAA22 /* RxCocoa in Frameworks */,
+				76A5668C2973E35E008CAA22 /* RxSwift in Frameworks */,
 				C3211FBF42B1CE3BC59C8420 /* Pods_DayCount.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -124,14 +130,14 @@
 		76A615F926579272006570B4 /* DayCount */ = {
 			isa = PBXGroup;
 			children = (
-				76A6162A265792B3006570B4 /* Models */,
-				76CFC8A2268A04B700AACDE4 /* ViewModel */,
-				76A6162D265792EB006570B4 /* Views */,
-				76A615FA26579272006570B4 /* AppDelegate.swift */,
-				76A615FC26579272006570B4 /* SceneDelegate.swift */,
 				76A6160326579274006570B4 /* Assets.xcassets */,
 				76A6160526579274006570B4 /* LaunchScreen.storyboard */,
 				76A6160826579274006570B4 /* Info.plist */,
+				76A615FA26579272006570B4 /* AppDelegate.swift */,
+				76A615FC26579272006570B4 /* SceneDelegate.swift */,
+				76A6162A265792B3006570B4 /* Models */,
+				76CFC8A2268A04B700AACDE4 /* ViewModel */,
+				76A6162D265792EB006570B4 /* Views */,
 			);
 			path = DayCount;
 			sourceTree = "<group>";
@@ -165,8 +171,8 @@
 		76A6162D265792EB006570B4 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				76A615FE26579272006570B4 /* MainView.swift */,
-				76A6162E26579324006570B4 /* ItemTableViewCell.swift */,
+				76A615FE26579272006570B4 /* DDayListViewController.swift */,
+				76A6162E26579324006570B4 /* DDayListItemTableViewCell.swift */,
 				76A6163026579359006570B4 /* AddItemView.swift */,
 			);
 			path = Views;
@@ -175,8 +181,8 @@
 		76CFC8A2268A04B700AACDE4 /* ViewModel */ = {
 			isa = PBXGroup;
 			children = (
-				76A6381026944DA70013273A /* MainViewModel.swift */,
-				76CFC8A3268A04D000AACDE4 /* ItemViewModel.swift */,
+				76CFC8A3268A04D000AACDE4 /* DDayListViewModel.swift */,
+				76A5668D2973EE1C008CAA22 /* DDayListItemViewModel.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -222,6 +228,11 @@
 			dependencies = (
 			);
 			name = DayCount;
+			packageProductDependencies = (
+				76A566872973E35E008CAA22 /* RxCocoa */,
+				76A566892973E35E008CAA22 /* RxRelay */,
+				76A5668B2973E35E008CAA22 /* RxSwift */,
+			);
 			productName = DayCount;
 			productReference = 76A615F726579272006570B4 /* DayCount.app */;
 			productType = "com.apple.product-type.application";
@@ -296,6 +307,9 @@
 				Base,
 			);
 			mainGroup = 76A615EE26579272006570B4;
+			packageReferences = (
+				76A566862973E35E008CAA22 /* XCRemoteSwiftPackageReference "RxSwift" */,
+			);
 			productRefGroup = 76A615F826579272006570B4 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -441,14 +455,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				76A615FF26579272006570B4 /* MainView.swift in Sources */,
+				76A615FF26579272006570B4 /* DDayListViewController.swift in Sources */,
 				76A6163126579359006570B4 /* AddItemView.swift in Sources */,
 				76A615FB26579272006570B4 /* AppDelegate.swift in Sources */,
-				76CFC8A4268A04D000AACDE4 /* ItemViewModel.swift in Sources */,
+				76CFC8A4268A04D000AACDE4 /* DDayListViewModel.swift in Sources */,
 				76A615FD26579272006570B4 /* SceneDelegate.swift in Sources */,
-				76A6162F26579324006570B4 /* ItemTableViewCell.swift in Sources */,
+				76A6162F26579324006570B4 /* DDayListItemTableViewCell.swift in Sources */,
 				76A6162C265792CE006570B4 /* DDay.swift in Sources */,
-				76A6381126944DA70013273A /* MainViewModel.swift in Sources */,
+				76A5668E2973EE1C008CAA22 /* DDayListItemViewModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -785,6 +799,35 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		76A566862973E35E008CAA22 /* XCRemoteSwiftPackageReference "RxSwift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/ReactiveX/RxSwift";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		76A566872973E35E008CAA22 /* RxCocoa */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 76A566862973E35E008CAA22 /* XCRemoteSwiftPackageReference "RxSwift" */;
+			productName = RxCocoa;
+		};
+		76A566892973E35E008CAA22 /* RxRelay */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 76A566862973E35E008CAA22 /* XCRemoteSwiftPackageReference "RxSwift" */;
+			productName = RxRelay;
+		};
+		76A5668B2973E35E008CAA22 /* RxSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 76A566862973E35E008CAA22 /* XCRemoteSwiftPackageReference "RxSwift" */;
+			productName = RxSwift;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 76A615EF26579272006570B4 /* Project object */;
 }
