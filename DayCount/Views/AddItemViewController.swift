@@ -87,7 +87,7 @@ final class AddItemViewController: UIViewController {
     }()
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        self.view.endEditing(true)
+        view.endEditing(true)
     }
     
     override func viewDidLoad() {
@@ -98,7 +98,8 @@ final class AddItemViewController: UIViewController {
         bind()
         
         let dateFormatter = DateFormatter()
-        datePickerView.selectRow(0, inComponent: 0, animated: false)
+        dateFormatter.dateFormat = "yyyy"
+        datePickerView.selectRow(Int(dateFormatter.string(from: Date()))!-2022, inComponent: 0, animated: false)
         dateFormatter.dateFormat = "M"
         datePickerView.selectRow(Int(dateFormatter.string(from: Date()))!-1, inComponent: 1, animated: false)
         dateFormatter.dateFormat = "d"
@@ -120,14 +121,12 @@ extension AddItemViewController {
             let date = currentDate.split(separator: "-")
             
             dateTextField.text = date[0]+"년 "+date[1]+"월 "+date[2]+"일"
-            switchOn = true
-            dateTextField.isEnabled = false
-        }
-        else{
-            switchOn = false
-            dateTextField.isEnabled = true
+        } else {
             dateTextField.text = ""
         }
+        
+        switchOn = !switchOn
+        dateTextField.isEnabled = !dateTextField.isEnabled
     }
     
     
@@ -159,11 +158,7 @@ extension AddItemViewController {
         viewModel.output.enableDoneButton
             .asObservable()
             .subscribe(onNext: { [weak self] value in
-                if value {
-                    self?.doneBtn.backgroundColor = .systemBlue
-                } else {
-                    self?.doneBtn.backgroundColor = .systemGray2
-                }
+                self?.doneBtn.backgroundColor = value ? .systemBlue : .systemGray2
             })
             .disposed(by: disposebag)
         
