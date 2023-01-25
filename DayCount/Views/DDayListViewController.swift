@@ -13,7 +13,7 @@ import RxSwift
 final class DDayListViewController: UIViewController {
     var feedbackGenerator: UISelectionFeedbackGenerator?
     private let disposebag = DisposeBag()
-    private var viewModel = DDayListVIewModel()
+    private var viewModel = DDayListViewModel()
 
     private lazy var itemTableView: UITableView = {
         let tableView = UITableView(frame: .zero)
@@ -36,39 +36,17 @@ final class DDayListViewController: UIViewController {
         
     // 뷰-뷰모델 바인딩
     func bind(){
-        plusbutton.rx.tap
-            .bind{ [weak self] in
-                self?.addItemView()
-            }.disposed(by: disposebag)
+        let input = DDayListViewModel.Input(tapAddButton: plusbutton.rx.tap)
+        let output = viewModel.transform(input: input)
         
-        viewModel.output.reloadList
-            .subscribe(onNext: { [weak self] _ in
-                self?.itemTableView.reloadData()
-            })
-            .disposed(by: disposebag)
-        
-        viewModel.output.list.accept(viewModel.list)
-
-        viewModel.output.list
-            .bind(to: itemTableView.rx.items) { tableView, indexPath, item in
-                guard let cell = tableView.dequeueReusableCell(
-                    withIdentifier: DDayListItemTableViewCell.identifier
-                ) as? DDayListItemTableViewCell
-                else { return UITableViewCell() }
-                
-                cell.bind(data: item)
-                
-          
-                return cell
-            }
+        output.buttonTap
+            .drive(onNext: { [weak self] _ in self?.moveToAddItemVC() })
             .disposed(by: disposebag)
     }
     
     // plus 버튼 클릭 이벤트
-    private func addItemView() {
-        let addItemView = AddItemView()
-        addItemView.modalPresentationStyle = .fullScreen
-        self.present(addItemView, animated: true, completion: nil)
+    private func moveToAddItemVC() {
+        present(AddItemViewController(), animated: true)
     }
         
     func setupView(){

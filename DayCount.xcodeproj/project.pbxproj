@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		76505ED429801B9B00233B22 /* ViewModelType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76505ED329801B9B00233B22 /* ViewModelType.swift */; };
 		76A566882973E35E008CAA22 /* RxCocoa in Frameworks */ = {isa = PBXBuildFile; productRef = 76A566872973E35E008CAA22 /* RxCocoa */; };
 		76A5668A2973E35E008CAA22 /* RxRelay in Frameworks */ = {isa = PBXBuildFile; productRef = 76A566892973E35E008CAA22 /* RxRelay */; };
 		76A5668C2973E35E008CAA22 /* RxSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 76A5668B2973E35E008CAA22 /* RxSwift */; };
@@ -43,6 +44,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		76505ED329801B9B00233B22 /* ViewModelType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModelType.swift; sourceTree = "<group>"; };
 		76A5668D2973EE1C008CAA22 /* DDayListItemViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DDayListItemViewModel.swift; sourceTree = "<group>"; };
 		76A566902973F1E9008CAA22 /* UITextField+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITextField+.swift"; sourceTree = "<group>"; };
 		76A615F726579272006570B4 /* DayCount.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DayCount.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -92,6 +94,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		76505ED229801B5500233B22 /* Common */ = {
+			isa = PBXGroup;
+			children = (
+				76505ED329801B9B00233B22 /* ViewModelType.swift */,
+			);
+			path = Common;
+			sourceTree = "<group>";
+		};
 		76A5668F2973F1D0008CAA22 /* Extension */ = {
 			isa = PBXGroup;
 			children = (
@@ -128,6 +138,7 @@
 				76A6160826579274006570B4 /* Info.plist */,
 				76A615FA26579272006570B4 /* AppDelegate.swift */,
 				76A615FC26579272006570B4 /* SceneDelegate.swift */,
+				76505ED229801B5500233B22 /* Common */,
 				76A6162A265792B3006570B4 /* Models */,
 				76CFC8A2268A04B700AACDE4 /* ViewModel */,
 				76A6162D265792EB006570B4 /* Views */,
@@ -326,6 +337,7 @@
 				76A6162F26579324006570B4 /* DDayListItemTableViewCell.swift in Sources */,
 				76A566912973F1E9008CAA22 /* UITextField+.swift in Sources */,
 				76A6162C265792CE006570B4 /* DDay.swift in Sources */,
+				76505ED429801B9B00233B22 /* ViewModelType.swift in Sources */,
 				76A5668E2973EE1C008CAA22 /* DDayListItemViewModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
