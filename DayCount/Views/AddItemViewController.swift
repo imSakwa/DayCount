@@ -100,7 +100,7 @@ final class AddItemViewController: UIViewController {
         
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy"
-        datePickerView.selectRow(Int(dateFormatter.string(from: Date()))!-2022, inComponent: 0, animated: false)
+        datePickerView.selectRow(Int(dateFormatter.string(from: Date()))!-2021, inComponent: 0, animated: false)
         dateFormatter.dateFormat = "M"
         datePickerView.selectRow(Int(dateFormatter.string(from: Date()))!-1, inComponent: 1, animated: false)
         dateFormatter.dateFormat = "d"
@@ -113,7 +113,7 @@ extension AddItemViewController {
     @objc private func onSwitchChanged() {
         if upDownSwitch.isOn {
             let format_date = DateFormatter()
-            format_date.dateFormat = "yyyy-MM-dd"
+            format_date.dateFormat = "yyyy-M-d"
             let currentDate = format_date.string(from: Date())
             let date = currentDate.split(separator: "-")
             

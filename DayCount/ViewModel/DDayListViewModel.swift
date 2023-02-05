@@ -20,6 +20,7 @@ final class DDayListViewModel: ViewModelType {
     }
     
     private var disposeBag = DisposeBag()
+    var ddayList: [DDay] = []
     
     func transform(input: Input) -> Output {
         let buttonTap = input.tapAddButton

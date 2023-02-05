@@ -25,6 +25,7 @@ final class DDayListViewController: UIViewController {
         )
         tableView.tableFooterView = plusbutton
         tableView.rx.setDelegate(self).disposed(by: disposebag)
+        tableView.dataSource = self
         return tableView
     }()
     
@@ -34,29 +35,26 @@ final class DDayListViewController: UIViewController {
         return button
     }()
         
-    // 뷰-뷰모델 바인딩
-    func bind(){
-        let input = DDayListViewModel.Input(tapAddButton: plusbutton.rx.tap)
-        let output = viewModel.transform(input: input)
-        
-        output.buttonTap
-            .drive(onNext: { [weak self] _ in self?.moveToAddItemVC() })
-            .disposed(by: disposebag)
-    }
-    
-    // plus 버튼 클릭 이벤트
-    private func moveToAddItemVC() {
-        present(AddItemViewController(), animated: true)
-    }
-        
-    func setupView(){
+    override func viewDidLoad() {
+        super.viewDidLoad()
+ 
         overrideUserInterfaceStyle = .light
         view.backgroundColor = .white
         
-        view.addSubview(itemTableView)
+        feedbackGenerator = UISelectionFeedbackGenerator()
+        feedbackGenerator?.prepare()    // 준비상태
+        
+        setupLayout()
+        bind()
     }
+}
+
+// MARK: - Functions
+extension DDayListViewController {
     
-    func setupLayout() {
+    private func setupLayout() {
+        view.addSubview(itemTableView)
+        
         NSLayoutConstraint.activate([
             itemTableView.topAnchor.constraint(
                 equalTo: view.safeAreaLayoutGuide.topAnchor
@@ -75,16 +73,26 @@ final class DDayListViewController: UIViewController {
 
     }
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
- 
+    // 뷰-뷰모델 바인딩
+    private func bind(){
+        let input = DDayListViewModel.Input(tapAddButton: plusbutton.rx.tap)
+        let output = viewModel.transform(input: input)
         
-        feedbackGenerator = UISelectionFeedbackGenerator()
-        feedbackGenerator?.prepare()    // 준비상태
+        output.buttonTap
+            .drive(onNext: { [weak self] _ in self?.moveToAddItemVC() })
+            .disposed(by: disposebag)
         
-        setupView()
-        setupLayout()
-        bind()
+        
+    }
+    
+    // plus 버튼 클릭 이벤트
+    private func moveToAddItemVC() {
+        let addItemVC = AddItemViewController()
+        addItemVC.addItemHandler = { [weak self] item in
+            self?.viewModel.ddayList.append(item)
+            self?.itemTableView.reloadData()
+        }
+        present(addItemVC, animated: true)
     }
 }
 
@@ -92,6 +100,7 @@ class CustomSwipeGesture: UISwipeGestureRecognizer {
     var itemView: DDayListItemTableViewCell?
 }
 
+// MARK: - UITableView Extension
 extension DDayListViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return UIScreen.main.bounds.height / 10
@@ -106,20 +115,15 @@ extension DDayListViewController: UITableViewDelegate {
     }
 }
 
-//viewModel.output.list
-//    .asDriver()
-//    .drive(itemTableView.rx.items){ tableView, indexPath, item in
-//    let cell = tableView.dequeueReusableCell(withIdentifier: "cell") as! ItemTableViewCell
-//    cell.title.text = item.title
-//
-//    if item.isSwitchOn {
-//        cell.date.text = item.date + "~"
-//        let dday: String = String(self.viewModel.calcDDay(date: item.date, isSwitchOn: item.isSwitchOn))
-//        cell.ddaylabel.text = "D+"+dday
-//    } else {
-//        cell.date.text = "~" + item.date
-//        let dday: String = String(self.viewModel.calcDDay(date: item.date, isSwitchOn: item.isSwitchOn))
-//        cell.ddaylabel.text = "D-"+dday
-//    }
-//    return cell
-//}.disposed(by: disposebag)
+extension DDayListViewController: UITableViewDataSource {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return viewModel.ddayList.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: DDayListItemTableViewCell.identifier) as? DDayListItemTableViewCell else { return UITableViewCell() }
+        cell.selectionStyle = .none
+        cell.setupView(data: viewModel.ddayList[indexPath.row])
+        return cell
+    }
+}

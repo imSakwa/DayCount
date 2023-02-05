@@ -65,7 +65,6 @@ final class DDayListItemTableViewCell: UITableViewCell {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         translatesAutoresizingMaskIntoConstraints = false
         
-        setupView()
         setupLayout()
     }
     
@@ -73,28 +72,40 @@ final class DDayListItemTableViewCell: UITableViewCell {
 }
 
 extension DDayListItemTableViewCell {
-    func bind(data: DDay) {
+    private func calcDDay(date: String, isSwitchOn: Bool) -> Int {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy년 M월 d일"
+        
+        let todayDate: Date = dateFormatter.date(from: dateFormatter.string(from: Date()))!
+        let inputDate: Date = dateFormatter.date(from: date)!
+        
+        let aCase = todayDate.timeIntervalSince(inputDate)
+        let bCase = inputDate.timeIntervalSince(todayDate)
+        let ddayValue: Int = isSwitchOn ? abs(Int(aCase/86400)) + 1 : abs(Int(bCase/86400))
+        
+        return ddayValue
+    }
+    
+    func setupView(data: DDay) {
         titleLabel.text = data.title
         
         if data.isSwitchOn {
             dateLabel.text = data.date + "~"
-            let dday: String = String(viewModel.calcDDay(date: data.date, isSwitchOn: data.isSwitchOn))
+            let dday: String = String(calcDDay(date: data.date, isSwitchOn: data.isSwitchOn))
             ddaylabel.text = "D+"+dday
         } else {
             dateLabel.text = "~" + data.date
-            let dday: String = String(viewModel.calcDDay(date: data.date, isSwitchOn: data.isSwitchOn))
+            let dday: String = String(calcDDay(date: data.date, isSwitchOn: data.isSwitchOn))
             ddaylabel.text = "D-"+dday
         }
     }
     
-    private func setupView(){
+    private func setupLayout(){
         [dateLabel, ddaylabel].forEach { dateStackView.addArrangedSubview($0) }
         [titleLabel, dateStackView].forEach { itemStackView.addArrangedSubview($0) }
         
         contentView.addSubview(itemStackView)
-    }
-    
-    private func setupLayout(){
+        
         NSLayoutConstraint.activate([
             contentView.widthAnchor.constraint(
                 equalToConstant: UIScreen.main.bounds.width-20
