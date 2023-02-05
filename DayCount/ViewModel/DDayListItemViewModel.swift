@@ -20,11 +20,12 @@ final class DDayListItemViewModel: ViewModelType {
     
     struct Output {
         let enableSaveButton: Driver<Bool>
-        let tapDoneButton: Driver<Void>
+        let tapDoneButton: Driver<(String,String,Bool)>
 //        let ddaylist: Driver<[DDay]>
 //        let goToMain = PublishRelay<Void>()
     }
     
+    private let ddayList: [DDay] = [DDay]()
     
     func transform(input: Input) -> Output {
         let enableSaveButton = Driver
@@ -36,7 +37,7 @@ final class DDayListItemViewModel: ViewModelType {
             .withLatestFrom(
                 Driver.combineLatest(input.titleStr, input.dateStr, input.isSwitchOn)
             )
-            .asDriver(onErrorJustReturn: ())
+            .asDriver(onErrorJustReturn: ("","",false))
         
 //            .bind { [weak self] (title, date, isSwitchOn) in
 //                var date = date

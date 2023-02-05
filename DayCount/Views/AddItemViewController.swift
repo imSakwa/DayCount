@@ -18,7 +18,8 @@ final class AddItemViewController: UIViewController {
     
     private let viewModel = DDayListItemViewModel()
     private let disposebag = DisposeBag()
-
+    var addItemHandler: ((DDay) -> Void)?
+    
     private lazy var titleTextField: UITextField = {
         let textField = UITextField(frame: .zero)
         textField.translatesAutoresizingMaskIntoConstraints = false
@@ -82,7 +83,7 @@ final class AddItemViewController: UIViewController {
         button.setTitle("추가하기", for: .normal)
         button.layer.cornerRadius = 10
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.backgroundColor = .systemGray2
+        button.isEnabled = false
         return button
     }()
     
@@ -107,11 +108,7 @@ final class AddItemViewController: UIViewController {
     }
 }
 
-extension AddItemViewController {
-    private func goToMain() {
-        dismiss(animated: true, completion: nil)
-    }
-    
+extension AddItemViewController {    
     // 오늘부터 switch on/off 동작 함수
     @objc private func onSwitchChanged() {
         if upDownSwitch.isOn {
@@ -140,40 +137,30 @@ extension AddItemViewController {
         
         let output = viewModel.transform(input: input)
         output.enableSaveButton
-            .drive(doneBtn.rx.isEnabled)
+            .drive(onNext: { [weak self] value in
+                self?.doneBtn.isEnabled = value
+                self?.doneBtn.backgroundColor = value ? .systemBlue : .systemGray2
+            })
             .disposed(by: disposebag)
         
         output.tapDoneButton
-            .d
-        
-   
-//        // Output
-//        viewModel.output.enableDoneButton
-//            .drive(doneBtn.rx.isEnabled)
-//            .disposed(by: disposebag)
-//        
-//        viewModel.output.enableDoneButton
-//            .asObservable()
-//            .subscribe(onNext: { [weak self] value in
-//                self?.doneBtn.backgroundColor = value ? .systemBlue : .systemGray2
-//            })
-//            .disposed(by: disposebag)
-//        
-//        viewModel.output.goToMain
-//            .bind(onNext: goToMain)
-//            .disposed(by: disposebag)
+            .drive(onNext: { [weak self] value in
+                let newItem = DDay(title: value.0, date: value.1, isSwitchOn: value.2)
+                self?.addItemHandler?(newItem)
+                self?.dismiss(animated: true)
+            })
+            .disposed(by: disposebag)
     }
     
     private func setupView() {
         view.backgroundColor = .white
-        
-        [titleTextField, dateStackView, doneBtn].forEach { view.addSubview($0) }
-        [dateTextField, textLabel, upDownSwitch].forEach { dateStackView.addArrangedSubview($0) }
-        
         dateTextField.inputView = datePickerView
     }
     
     private func setupLayout() {
+        [titleTextField, dateStackView, doneBtn].forEach { view.addSubview($0) }
+        [dateTextField, textLabel, upDownSwitch].forEach { dateStackView.addArrangedSubview($0) }
+        
         titleTextField.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         titleTextField.topAnchor.constraint(equalTo: view.topAnchor, constant: 225).isActive = true
         titleTextField.widthAnchor.constraint(equalToConstant: view.bounds.width/1.2).isActive = true
