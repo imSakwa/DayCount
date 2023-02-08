@@ -20,15 +20,29 @@ final class DDayListItemViewModel: ViewModelType {
     
     struct Output {
         let enableSaveButton: Driver<Bool>
+        let changeSwitch: Driver<Bool>
         let tapDoneButton: Driver<(String,String,Bool)>
     }
     
     private let ddayList: [DDay] = [DDay]()
     
     func transform(input: Input) -> Output {
-        let enableSaveButton = Driver
+        let enableButtonCase1 = Driver
             .combineLatest(input.titleStr, input.dateStr)
-            .map{ !$0.0.isEmpty && !$0.1.isEmpty }
+            .map { !$0.0.isEmpty && !$0.1.isEmpty }
+            .asDriver(onErrorJustReturn: false)
+        
+        let enableButtonCase2 = Driver
+            .combineLatest(input.titleStr, input.isSwitchOn)
+            .map { !$0.0.isEmpty && $0.1 }
+            .asDriver(onErrorJustReturn: false)
+        
+        let enableButton = Driver
+            .combineLatest(enableButtonCase1, enableButtonCase2)
+            .map { $0.0 || $0.1 }
+            .asDriver(onErrorJustReturn: false)
+        
+        let changeSwitch = input.isSwitchOn
             .asDriver(onErrorJustReturn: false)
     
         let tapDoneButton = input.tapDone
@@ -38,7 +52,8 @@ final class DDayListItemViewModel: ViewModelType {
             .asDriver(onErrorJustReturn: ("","",false))
         
         return Output(
-            enableSaveButton: enableSaveButton,
+            enableSaveButton: enableButton,
+            changeSwitch: changeSwitch,
             tapDoneButton: tapDoneButton
         )
     }

@@ -73,7 +73,6 @@ final class AddItemViewController: UIViewController {
         let switchBtn = UISwitch(frame: .zero)
         switchBtn.translatesAutoresizingMaskIntoConstraints = false
         switchBtn.isOn = false
-        switchBtn.addTarget(self, action: #selector(onSwitchChanged), for: .valueChanged)
         return switchBtn
     }()
     
@@ -108,25 +107,7 @@ final class AddItemViewController: UIViewController {
     }
 }
 
-extension AddItemViewController {    
-    // 오늘부터 switch on/off 동작 함수
-    @objc private func onSwitchChanged() {
-        if upDownSwitch.isOn {
-            let format_date = DateFormatter()
-            format_date.dateFormat = "yyyy-M-d"
-            let currentDate = format_date.string(from: Date())
-            let date = currentDate.split(separator: "-")
-            
-            dateTextField.text = date[0]+"년 "+date[1]+"월 "+date[2]+"일"
-        } else {
-            dateTextField.text = ""
-        }
-        
-        switchOn = !switchOn
-        dateTextField.isEnabled = !dateTextField.isEnabled
-    }
-    
-    
+extension AddItemViewController {
     private func bind() {
         let input = DDayListItemViewModel.Input(
             titleStr: titleTextField.rx.text.orEmpty.asDriver(),
@@ -143,6 +124,12 @@ extension AddItemViewController {
             })
             .disposed(by: disposebag)
         
+        output.changeSwitch
+            .drive(onNext: { [weak self] _ in
+                self?.changeSwitch()
+            })
+            .disposed(by: disposebag)
+        
         output.tapDoneButton
             .drive(onNext: { [weak self] value in
                 let newItem = DDay(title: value.0, date: value.1, isSwitchOn: value.2)
@@ -150,6 +137,24 @@ extension AddItemViewController {
                 self?.dismiss(animated: true)
             })
             .disposed(by: disposebag)
+    }
+    
+    // 오늘부터 switch on/off 동작 함수
+    private func changeSwitch() {
+        if upDownSwitch.isOn {
+            let format_date = DateFormatter()
+            format_date.dateFormat = "yyyy-M-d"
+            let currentDate = format_date.string(from: Date())
+            let date = currentDate.split(separator: "-")
+            
+            dateTextField.text = date[0]+"년 "+date[1]+"월 "+date[2]+"일"
+        } else {
+            dateTextField.text = ""
+        }
+        
+        dateTextField.sendActions(for: .valueChanged)
+        switchOn = !switchOn
+        dateTextField.isEnabled = !dateTextField.isEnabled
     }
     
     private func setupView() {
