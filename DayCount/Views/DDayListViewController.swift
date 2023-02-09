@@ -5,6 +5,7 @@
 //  Created by 창민 on 2021/05/21.
 //
 
+import CoreData
 import UIKit
 
 import RxCocoa
@@ -46,6 +47,7 @@ final class DDayListViewController: UIViewController {
         
         setupLayout()
         bind()
+        fetchDDay()
     }
 }
 
@@ -91,8 +93,47 @@ extension DDayListViewController {
         addItemVC.addItemHandler = { [weak self] item in
             self?.viewModel.ddayList.append(item)
             self?.itemTableView.reloadData()
+            self?.saveInCoreData(item: item)
         }
         present(addItemVC, animated: true)
+    }
+    
+    func fetchDDay() {
+        let appDelegate = UIApplication.shared.delegate as! AppDelegate
+        let context = appDelegate.persistentContainer.viewContext
+            
+        do {
+            let dday = try context.fetch(DDayModel.fetchRequest()) as! [DDayModel]
+            var list = [DDay]()
+            
+            for model in dday {
+                list.append(DDay(title: model.title!, date: model.date!, isSwitchOn: model.isSwitchOn))
+            }
+            viewModel.ddayList = list
+            itemTableView.reloadData()
+            
+        } catch {
+           print(error.localizedDescription)
+        }
+    }
+    
+    func saveInCoreData(item: DDay) {
+        let appDelegate = UIApplication.shared.delegate as! AppDelegate
+        let context = appDelegate.persistentContainer.viewContext
+        let entity = NSEntityDescription.entity(forEntityName: "DDayModel", in: context)
+                
+        if let entity = entity {
+            let dday = NSManagedObject(entity: entity, insertInto: context)
+            dday.setValue(item.title, forKey: "title")
+            dday.setValue(item.date, forKey: "date")
+            dday.setValue(item.isSwitchOn, forKey: "isSwitchOn")
+        }
+        
+        do {
+             try context.save()
+           } catch {
+             print(error.localizedDescription)
+           }
     }
 }
 

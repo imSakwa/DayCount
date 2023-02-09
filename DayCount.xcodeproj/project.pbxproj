@@ -24,6 +24,7 @@
 		76A6162F26579324006570B4 /* DDayListItemTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76A6162E26579324006570B4 /* DDayListItemTableViewCell.swift */; };
 		76A6163126579359006570B4 /* AddItemViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76A6163026579359006570B4 /* AddItemViewController.swift */; };
 		76CFC8A4268A04D000AACDE4 /* DDayListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76CFC8A3268A04D000AACDE4 /* DDayListViewModel.swift */; };
+		76FD43B429953D9B003759BF /* Model.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 76FD43B229953D9B003759BF /* Model.xcdatamodeld */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -64,6 +65,7 @@
 		76A6162E26579324006570B4 /* DDayListItemTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DDayListItemTableViewCell.swift; sourceTree = "<group>"; };
 		76A6163026579359006570B4 /* AddItemViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddItemViewController.swift; sourceTree = "<group>"; };
 		76CFC8A3268A04D000AACDE4 /* DDayListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DDayListViewModel.swift; sourceTree = "<group>"; };
+		76FD43B329953D9B003759BF /* DDayModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = DDayModel.xcdatamodel; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -113,6 +115,7 @@
 		76A615EE26579272006570B4 = {
 			isa = PBXGroup;
 			children = (
+				76FD43B229953D9B003759BF /* Model.xcdatamodeld */,
 				76A615F926579272006570B4 /* DayCount */,
 				76A6161026579274006570B4 /* DayCountTests */,
 				76A6161B26579274006570B4 /* DayCountUITests */,
@@ -339,6 +342,7 @@
 				76A6162C265792CE006570B4 /* DDay.swift in Sources */,
 				76505ED429801B9B00233B22 /* ViewModelType.swift in Sources */,
 				76A5668E2973EE1C008CAA22 /* DDayListItemViewModel.swift in Sources */,
+				76FD43B429953D9B003759BF /* Model.xcdatamodeld in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -698,6 +702,19 @@
 			productName = RxSwift;
 		};
 /* End XCSwiftPackageProductDependency section */
+
+/* Begin XCVersionGroup section */
+		76FD43B229953D9B003759BF /* Model.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				76FD43B329953D9B003759BF /* DDayModel.xcdatamodel */,
+			);
+			currentVersion = 76FD43B329953D9B003759BF /* DDayModel.xcdatamodel */;
+			path = Model.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = 76A615EF26579272006570B4 /* Project object */;
 }

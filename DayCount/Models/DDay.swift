@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import CoreData
 
 struct DDay: Codable {
     var title: String
