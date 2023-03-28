@@ -15,7 +15,7 @@ final class DDayListItemTableViewCell: UITableViewCell {
     
     private let viewModel = DDayListItemViewModel()
         
-    private lazy var itemStackView: UIStackView = {
+    private let itemStackView: UIStackView = {
         let stackView = UIStackView(frame: .zero)
         stackView.axis = .horizontal
         stackView.distribution = .fillProportionally
@@ -28,7 +28,7 @@ final class DDayListItemTableViewCell: UITableViewCell {
         return stackView
     }()
     
-    private lazy var titleLabel: UILabel = {
+    private let titleLabel: UILabel = {
         let label = UILabel(frame: .zero)
         label.textColor = .black
         label.font = UIFont.systemFont(ofSize: 18)
@@ -36,14 +36,14 @@ final class DDayListItemTableViewCell: UITableViewCell {
         return label
     }()
     
-    private lazy var dateStackView: UIStackView = {
+    private let dateStackView: UIStackView = {
         let stackView = UIStackView(frame: .zero)
         stackView.axis = .vertical
         stackView.translatesAutoresizingMaskIntoConstraints = false
         return stackView
     }()
     
-    private lazy var dateLabel: UILabel = {
+    private let dateLabel: UILabel = {
         let label = UILabel(frame: .zero)
         label.textColor = .black
         label.textAlignment = .right
@@ -52,7 +52,7 @@ final class DDayListItemTableViewCell: UITableViewCell {
         return label
     }()
     
-    private lazy var ddaylabel: UILabel = {
+    private let ddaylabel: UILabel = {
         let label = UILabel(frame: .zero)
         label.textColor = .black
         label.textAlignment = .right
@@ -107,75 +107,37 @@ extension DDayListItemTableViewCell {
         contentView.addSubview(itemStackView)
         
         NSLayoutConstraint.activate([
-            contentView.widthAnchor.constraint(
-                equalToConstant: UIScreen.main.bounds.width-20
-            ),
-            contentView.heightAnchor.constraint(
-                equalToConstant: UIScreen.main.bounds.height/10
-            )
+            contentView.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.width-20),
+            contentView.heightAnchor.constraint(equalToConstant: UIScreen.main.bounds.height/10)
         ])
         
         NSLayoutConstraint.activate([
-            itemStackView.leftAnchor.constraint(
-                equalTo: contentView.leftAnchor
-            ),
-            itemStackView.rightAnchor.constraint(
-                equalTo: contentView.rightAnchor
-            ),
-            itemStackView.topAnchor.constraint(
-                equalTo: contentView.topAnchor
-            ),
-            itemStackView.bottomAnchor.constraint(
-                equalTo: contentView.bottomAnchor,
-                constant: -5
-            )
+            itemStackView.leftAnchor.constraint(equalTo: contentView.leftAnchor),
+            itemStackView.rightAnchor.constraint(equalTo: contentView.rightAnchor),
+            itemStackView.topAnchor.constraint(equalTo: contentView.topAnchor),
+            itemStackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -5)
         ])
 
         NSLayoutConstraint.activate([
-            titleLabel.leftAnchor.constraint(
-                equalTo: itemStackView.leftAnchor,
-                constant: 10
-            ),
-            titleLabel.rightAnchor.constraint(
-                equalTo: dateStackView.leftAnchor
-            )
+            titleLabel.leftAnchor.constraint(equalTo: itemStackView.leftAnchor, constant: 10),
+            titleLabel.rightAnchor.constraint(equalTo: dateStackView.leftAnchor)
         ])
         
         NSLayoutConstraint.activate([
-            dateStackView.topAnchor.constraint(
-                equalTo: itemStackView.topAnchor
-            ),
-            dateStackView.bottomAnchor.constraint(
-                equalTo: itemStackView.bottomAnchor
-            ),
-            dateStackView.rightAnchor.constraint(
-                equalTo: contentView.rightAnchor,
-                constant: -10
-            )
+            dateStackView.topAnchor.constraint(equalTo: itemStackView.topAnchor),
+            dateStackView.bottomAnchor.constraint(equalTo: itemStackView.bottomAnchor),
+            dateStackView.rightAnchor.constraint(equalTo: contentView.rightAnchor, constant: -10)
         ])
       
         NSLayoutConstraint.activate([
-            dateLabel.topAnchor.constraint(
-                equalTo: itemStackView.topAnchor,
-                constant: 10
-            ),
-            dateLabel.rightAnchor.constraint(
-                equalTo: dateStackView.rightAnchor,
-                constant: -10
-            ),
-            dateLabel.heightAnchor.constraint(
-                equalToConstant: UIScreen.main.bounds.height/30
-            )
+            dateLabel.topAnchor.constraint(equalTo: itemStackView.topAnchor, constant: 10),
+            dateLabel.rightAnchor.constraint(equalTo: dateStackView.rightAnchor, constant: -10),
+            dateLabel.heightAnchor.constraint(equalToConstant: UIScreen.main.bounds.height/30)
         ])
       
         NSLayoutConstraint.activate([
-            ddaylabel.rightAnchor.constraint(
-                equalTo: dateLabel.rightAnchor
-            ),
-            ddaylabel.bottomAnchor.constraint(
-                equalTo: contentView.bottomAnchor,
-                constant: -10
-            )
+            ddaylabel.rightAnchor.constraint(equalTo: dateLabel.rightAnchor),
+            ddaylabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -10)
         ])
     }
 }

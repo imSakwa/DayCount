@@ -20,7 +20,7 @@ final class AddItemViewController: UIViewController {
     private let disposebag = DisposeBag()
     var addItemHandler: ((DDay) -> Void)?
     
-    private lazy var titleTextField: UITextField = {
+    private let titleTextField: UITextField = {
         let textField = UITextField(frame: .zero)
         textField.translatesAutoresizingMaskIntoConstraints = false
         textField.attributedPlaceholder = NSAttributedString(
@@ -33,7 +33,7 @@ final class AddItemViewController: UIViewController {
         return textField
     }()
     
-    private lazy var dateStackView: UIStackView = {
+    private let dateStackView: UIStackView = {
         let stackView = UIStackView(frame: .zero)
         stackView.axis = .horizontal
         stackView.distribution = .fill
@@ -42,7 +42,7 @@ final class AddItemViewController: UIViewController {
         return stackView
     }()
     
-    private lazy var dateTextField: UITextField = {
+    private let dateTextField: UITextField = {
         let textField = UITextField(frame: .zero)
         textField.translatesAutoresizingMaskIntoConstraints = false
         textField.attributedPlaceholder = NSAttributedString(
@@ -55,7 +55,7 @@ final class AddItemViewController: UIViewController {
         return textField
     }()
     
-    private lazy var textLabel: UILabel = {
+    private let textLabel: UILabel = {
         let label = UILabel(frame: .zero)
         label.text = "오늘 기준"
         label.textColor = .black
@@ -69,7 +69,7 @@ final class AddItemViewController: UIViewController {
         return pickerview
     }()
     
-    private lazy var upDownSwitch: UISwitch = {
+    private let upDownSwitch: UISwitch = {
         let switchBtn = UISwitch(frame: .zero)
         switchBtn.translatesAutoresizingMaskIntoConstraints = false
         switchBtn.isOn = false
@@ -166,20 +166,26 @@ extension AddItemViewController {
         [titleTextField, dateStackView, doneBtn].forEach { view.addSubview($0) }
         [dateTextField, textLabel, upDownSwitch].forEach { dateStackView.addArrangedSubview($0) }
         
-        titleTextField.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        titleTextField.topAnchor.constraint(equalTo: view.topAnchor, constant: 225).isActive = true
-        titleTextField.widthAnchor.constraint(equalToConstant: view.bounds.width/1.2).isActive = true
-        titleTextField.heightAnchor.constraint(equalToConstant: view.bounds.height/24).isActive = true
+        NSLayoutConstraint.activate([
+            titleTextField.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            titleTextField.topAnchor.constraint(equalTo: view.topAnchor, constant: 225),
+            titleTextField.widthAnchor.constraint(equalToConstant: view.bounds.width / 1.2),
+            titleTextField.heightAnchor.constraint(equalToConstant: view.bounds.height / 24),
+        ])
         
-        dateStackView.topAnchor.constraint(equalTo: titleTextField.bottomAnchor, constant: 45).isActive = true
-        dateStackView.leftAnchor.constraint(equalTo: titleTextField.leftAnchor).isActive = true
-        dateStackView.rightAnchor.constraint(equalTo: titleTextField.rightAnchor).isActive = true
-        dateStackView.widthAnchor.constraint(equalTo: titleTextField.widthAnchor).isActive = true
-        dateStackView.heightAnchor.constraint(equalToConstant: view.bounds.height/24).isActive = true
-    
-        doneBtn.topAnchor.constraint(equalTo: dateStackView.bottomAnchor, constant: 100).isActive = true
-        doneBtn.widthAnchor.constraint(equalToConstant: 150).isActive = true
-        doneBtn.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        NSLayoutConstraint.activate([
+            dateStackView.topAnchor.constraint(equalTo: titleTextField.bottomAnchor, constant: 45),
+            dateStackView.leftAnchor.constraint(equalTo: titleTextField.leftAnchor),
+            dateStackView.rightAnchor.constraint(equalTo: titleTextField.rightAnchor),
+            dateStackView.widthAnchor.constraint(equalTo: titleTextField.widthAnchor),
+            dateStackView.heightAnchor.constraint(equalToConstant: view.bounds.height / 24)
+        ])
+        
+        NSLayoutConstraint.activate([
+            doneBtn.topAnchor.constraint(equalTo: dateStackView.bottomAnchor, constant: 100),
+            doneBtn.widthAnchor.constraint(equalToConstant: 150),
+            doneBtn.centerXAnchor.constraint(equalTo: view.centerXAnchor)
+        ])
     }
 }
 
@@ -191,15 +197,22 @@ extension AddItemViewController: UIPickerViewDataSource, UIPickerViewDelegate {
         return days.count
     }
     
-    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+    func pickerView(_ pickerView: UIPickerView,
+                    numberOfRowsInComponent component: Int) -> Int {
+        
         return days[component].count
     }
     
-    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+    func pickerView(_ pickerView: UIPickerView,
+                    titleForRow row: Int,
+                    forComponent component: Int) -> String? {
+        
         return days[component][row]
     }
     
-    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+    func pickerView(_ pickerView: UIPickerView,
+                    didSelectRow row: Int,
+                    inComponent component: Int) {
         
         var year: String = ""
         var month: String = ""
