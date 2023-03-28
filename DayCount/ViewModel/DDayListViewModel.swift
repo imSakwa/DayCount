@@ -7,24 +7,29 @@
 
 import Foundation
 
-import RxCocoa
-import RxSwift
+import Combine
+//import RxCocoa
+//import RxSwift
 
 final class DDayListViewModel: ViewModelType {
     struct Input {
-        let tapAddButton: ControlEvent<Void>
+//        let tapAddButton: ControlEvent<Void>
+        let tapAddButton: AnyPublisher<Void, Never>
     }
     
     struct Output {
-        let buttonTap: Driver<Void>
+//        let buttonTap: Driver<Void>
+        let buttonTap: AnyPublisher<Void, Never>
     }
     
-    private var disposeBag = DisposeBag()
+//    private var disposeBag = DisposeBag()
+    private var subscriptions = Set<AnyCancellable>()
     var ddayList: [DDay] = []
     
     func transform(input: Input) -> Output {
         let buttonTap = input.tapAddButton
-            .asDriver(onErrorJustReturn: ())
+            .eraseToAnyPublisher()
+//            .asDriver(onErrorJustReturn: ())
         
         return Output(buttonTap: buttonTap)
     }

@@ -8,13 +8,16 @@
 import CoreData
 import UIKit
 
+import Combine
 import RxCocoa
 import RxSwift
 
 final class DDayListViewController: UIViewController {
     var feedbackGenerator: UISelectionFeedbackGenerator?
     private let disposebag = DisposeBag()
+    private var cancellables = Set<AnyCancellable>()
     private var viewModel = DDayListViewModel()
+    private let tapButton = PassthroughSubject<Void, Never>()
 
     private lazy var itemTableView: UITableView = {
         let tableView = UITableView(frame: .zero)
@@ -33,6 +36,7 @@ final class DDayListViewController: UIViewController {
     private lazy var plusbutton: UIButton = {
         let button = UIButton(frame: .zero)
         button.setImage(UIImage.init(systemName: "plus.circle"), for: .normal)
+        button.addTarget(self, action: #selector(clickPlusButton), for: .touchUpInside)
         return button
     }()
         
@@ -75,14 +79,30 @@ extension DDayListViewController {
 
     }
     
+    @objc
+    private func clickPlusButton(_ sender: UIButton) {
+        tapButton.send()
+    }
+    
     // 뷰-뷰모델 바인딩
     private func bind(){
+        /* Rx버전
         let input = DDayListViewModel.Input(tapAddButton: plusbutton.rx.tap)
-        let output = viewModel.transform(input: input)
-        
         output.buttonTap
             .drive(onNext: { [weak self] _ in self?.moveToAddItemVC() })
             .disposed(by: disposebag)
+        */
+        
+        // Combine 버전
+        let input = DDayListViewModel.Input(tapAddButton: tapButton.eraseToAnyPublisher())
+        let output = viewModel.transform(input: input)
+        
+
+        output.buttonTap
+            .sink { [weak self] _ in
+                self?.moveToAddItemVC()
+            }
+            .store(in: &cancellables)
         
         
     }
