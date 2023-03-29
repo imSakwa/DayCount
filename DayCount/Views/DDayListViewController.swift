@@ -86,14 +86,6 @@ extension DDayListViewController {
     
     // 뷰-뷰모델 바인딩
     private func bind(){
-        /* Rx버전
-        let input = DDayListViewModel.Input(tapAddButton: plusbutton.rx.tap)
-        output.buttonTap
-            .drive(onNext: { [weak self] _ in self?.moveToAddItemVC() })
-            .disposed(by: disposebag)
-        */
-        
-        // Combine 버전
         let input = DDayListViewModel.Input(tapAddButton: tapButton.eraseToAnyPublisher())
         let output = viewModel.transform(input: input)
         
