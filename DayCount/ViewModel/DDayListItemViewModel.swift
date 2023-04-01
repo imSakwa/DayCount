@@ -18,10 +18,10 @@ final class DDayListItemViewModel: ViewModelType {
     
     struct Output {
         let enableSaveButton: AnyPublisher<Bool, Never>
-        let changeSwitch: AnyPublisher<Bool, Never>
         let tapDoneButton: AnyPublisher<(Void, String, String, Bool), Never>
     }
     
+    var cancel = Set<AnyCancellable>()
     private let ddayList: [DDay] = [DDay]()
     
     func transform(input: Input) -> Output {
@@ -49,7 +49,6 @@ final class DDayListItemViewModel: ViewModelType {
         
         return Output(
             enableSaveButton: enableButton,
-            changeSwitch: changeSwitch,
             tapDoneButton: tapDoneButton
         )
     }

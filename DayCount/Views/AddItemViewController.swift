@@ -73,10 +73,11 @@ final class AddItemViewController: UIViewController {
         return pickerview
     }()
     
-    private let upDownSwitch: UISwitch = {
+    private lazy var upDownSwitch: UISwitch = {
         let switchBtn = UISwitch(frame: .zero)
         switchBtn.translatesAutoresizingMaskIntoConstraints = false
         switchBtn.isOn = false
+        switchBtn.addTarget(self, action: #selector(changeSwitch), for: .valueChanged)
         return switchBtn
     }()
     
@@ -129,14 +130,8 @@ extension AddItemViewController {
                 self?.doneBtn.backgroundColor = value ? .systemBlue : .systemGray2
             }
             .store(in: &cancellables)
+
         
-        output.changeSwitch
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] _ in
-                self?.changeSwitch()
-            }
-            .store(in: &cancellables)
-    
         output.tapDoneButton
             .receive(on: DispatchQueue.main)
             .sink { [weak self] (value1, value2, value3, value4) in
@@ -148,7 +143,10 @@ extension AddItemViewController {
     }
     
     // 오늘부터 switch on/off 동작 함수
-    private func changeSwitch() {
+    @objc
+    private func changeSwitch(_ sender: UISwitch) {
+        switchValue.send(upDownSwitch.isOn)
+        
         if upDownSwitch.isOn {
             let format_date = DateFormatter()
             format_date.dateFormat = "yyyy-M-d"
