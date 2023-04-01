@@ -19,10 +19,9 @@ final class AddItemViewController: UIViewController {
     var addItemHandler: ((DDay) -> Void)?
     
     private let titleValue = PassthroughSubject<String, Never>()
-    private let date = PassthroughSubject<String, Never>()
-    private let text = PassthroughSubject<String, Never>()
-    private let switchon = PassthroughSubject<Bool, Never>()
-    private let doneButton = PassthroughSubject<Void, Never>()
+    private let dateValue = PassthroughSubject<String, Never>()
+    private let switchValue = PassthroughSubject<Bool, Never>()
+    private let doneValue = PassthroughSubject<Void, Never>()
     
     
     private let titleTextField: UITextField = {
@@ -117,9 +116,9 @@ extension AddItemViewController {
     private func bind() {
         let input = DDayListItemViewModel.Input(
             titleStr: titleValue.eraseToAnyPublisher(),
-            dateStr: date.eraseToAnyPublisher(),
-            isSwitchOn: switchon.eraseToAnyPublisher(),
-            tapDone: doneButton.eraseToAnyPublisher()
+            dateStr: dateValue.eraseToAnyPublisher(),
+            isSwitchOn: switchValue.eraseToAnyPublisher(),
+            tapDone: doneValue.eraseToAnyPublisher()
         )
         
         let output = viewModel.transform(input: input)
