@@ -9,12 +9,9 @@ import CoreData
 import UIKit
 
 import Combine
-import RxCocoa
-import RxSwift
 
 final class DDayListViewController: UIViewController {
-    var feedbackGenerator: UISelectionFeedbackGenerator?
-    private let disposebag = DisposeBag()
+   
     private var cancellables = Set<AnyCancellable>()
     private var viewModel = DDayListViewModel()
     private let tapButton = PassthroughSubject<Void, Never>()
@@ -28,7 +25,7 @@ final class DDayListViewController: UIViewController {
             forCellReuseIdentifier: DDayListItemTableViewCell.identifier
         )
         tableView.tableFooterView = plusbutton
-        tableView.rx.setDelegate(self).disposed(by: disposebag)
+        tableView.delegate = self
         tableView.dataSource = self
         return tableView
     }()
