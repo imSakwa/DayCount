@@ -9,6 +9,9 @@ import Combine
 import Foundation
 
 final class DDayListViewModel: ViewModelType {
+    private var subscriptions = Set<AnyCancellable>()
+    private var ddayList: [DDay] = []
+    
     struct Input {
         let tapAddButton: AnyPublisher<Void, Never>
     }
@@ -17,13 +20,27 @@ final class DDayListViewModel: ViewModelType {
         let buttonTap: AnyPublisher<Void, Never>
     }
     
-    private var subscriptions = Set<AnyCancellable>()
-    var ddayList: [DDay] = []
-    
     func transform(input: Input) -> Output {
         let buttonTap = input.tapAddButton
             .eraseToAnyPublisher()
         
         return Output(buttonTap: buttonTap)
+    }
+    
+    
+    func addDDayItem(item: DDay) {
+        ddayList.append(item)
+    }
+    
+    func initDDayArray(array: [DDay]) {
+        ddayList = array
+    }
+    
+    func getDDayItem(row: Int) -> DDay {
+        return ddayList[row]
+    }
+    
+    func getDDayArrayCount() -> Int {
+        return ddayList.count
     }
 }
