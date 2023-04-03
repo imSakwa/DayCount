@@ -7,9 +7,6 @@
 
 import UIKit
 
-import RxCocoa
-import RxSwift
-
 final class DDayListItemTableViewCell: UITableViewCell {
     static let identifier = String(describing: DDayListItemTableViewCell.self)
     

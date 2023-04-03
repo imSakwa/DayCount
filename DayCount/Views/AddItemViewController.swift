@@ -5,10 +5,8 @@
 //  Created by 창민 on 2021/05/21.
 //
 
+import Combine
 import UIKit
-
-import RxCocoa
-import RxSwift
 
 final class AddItemViewController: UIViewController {
     private var titles: [String] = []
@@ -17,8 +15,14 @@ final class AddItemViewController: UIViewController {
     private let days = [["2021","2022","2023","2024","2025","2026","2027","2028","2029","2030"],["1","2","3","4","5","6","7","8","9","10","11","12"],["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31"]]
     
     private let viewModel = DDayListItemViewModel()
-    private let disposebag = DisposeBag()
+    private var cancellables = Set<AnyCancellable>()
     var addItemHandler: ((DDay) -> Void)?
+    
+    private let titleValue = PassthroughSubject<String, Never>()
+    private let dateValue = PassthroughSubject<String, Never>()
+    private let switchValue = PassthroughSubject<Bool, Never>()
+    private let doneValue = PassthroughSubject<Void, Never>()
+    
     
     private let titleTextField: UITextField = {
         let textField = UITextField(frame: .zero)
@@ -69,10 +73,11 @@ final class AddItemViewController: UIViewController {
         return pickerview
     }()
     
-    private let upDownSwitch: UISwitch = {
+    private lazy var upDownSwitch: UISwitch = {
         let switchBtn = UISwitch(frame: .zero)
         switchBtn.translatesAutoresizingMaskIntoConstraints = false
         switchBtn.isOn = false
+        switchBtn.addTarget(self, action: #selector(changeSwitch), for: .valueChanged)
         return switchBtn
     }()
     
@@ -83,6 +88,7 @@ final class AddItemViewController: UIViewController {
         button.layer.cornerRadius = 10
         button.translatesAutoresizingMaskIntoConstraints = false
         button.isEnabled = false
+        button.backgroundColor = .systemGray2
         return button
     }()
     
@@ -110,37 +116,37 @@ final class AddItemViewController: UIViewController {
 extension AddItemViewController {
     private func bind() {
         let input = DDayListItemViewModel.Input(
-            titleStr: titleTextField.rx.text.orEmpty.asDriver(),
-            dateStr: dateTextField.rx.text.orEmpty.asDriver(),
-            isSwitchOn: upDownSwitch.rx.value.asDriver(),
-            tapDone: doneBtn.rx.tap
+            titleStr: titleValue.eraseToAnyPublisher(),
+            dateStr: dateValue.eraseToAnyPublisher(),
+            isSwitchOn: switchValue.eraseToAnyPublisher(),
+            tapDone: doneValue.eraseToAnyPublisher()
         )
         
         let output = viewModel.transform(input: input)
         output.enableSaveButton
-            .drive(onNext: { [weak self] value in
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] value in
                 self?.doneBtn.isEnabled = value
                 self?.doneBtn.backgroundColor = value ? .systemBlue : .systemGray2
-            })
-            .disposed(by: disposebag)
-        
-        output.changeSwitch
-            .drive(onNext: { [weak self] _ in
-                self?.changeSwitch()
-            })
-            .disposed(by: disposebag)
+            }
+            .store(in: &cancellables)
+
         
         output.tapDoneButton
-            .drive(onNext: { [weak self] value in
-                let newItem = DDay(title: value.0, date: value.1, isSwitchOn: value.2)
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] (value1, value2, value3, value4) in
+                let newItem = DDay(title: value2, date: value3, isSwitchOn: value4)
                 self?.addItemHandler?(newItem)
                 self?.dismiss(animated: true)
-            })
-            .disposed(by: disposebag)
+            }
+            .store(in: &cancellables)
     }
     
     // 오늘부터 switch on/off 동작 함수
-    private func changeSwitch() {
+    @objc
+    private func changeSwitch(_ sender: UISwitch) {
+        switchValue.send(upDownSwitch.isOn)
+        
         if upDownSwitch.isOn {
             let format_date = DateFormatter()
             format_date.dateFormat = "yyyy-M-d"
