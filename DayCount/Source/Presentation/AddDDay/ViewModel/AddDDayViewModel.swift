@@ -1,5 +1,5 @@
 //
-//  DDayListItemViewModel.swift
+//  AddDDayViewModel.swift
 //  DayCount
 //
 //  Created by ChangMin on 2023/01/15.
@@ -8,7 +8,7 @@
 import Combine
 import Foundation
 
-final class DDayListItemViewModel: ViewModelType {
+final class AddDDayViewModel: ViewModelType {
     struct Input {
         let titleStr: AnyPublisher<String, Never>
         let dateStr: AnyPublisher<String, Never>
