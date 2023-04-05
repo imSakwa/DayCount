@@ -14,7 +14,7 @@ final class AddItemViewController: UIViewController {
     private var switchOn: Bool = false
     private let days = [["2021","2022","2023","2024","2025","2026","2027","2028","2029","2030"],["1","2","3","4","5","6","7","8","9","10","11","12"],["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31"]]
     
-    private let viewModel = DDayListItemViewModel()
+    private let viewModel = AddDDayViewModel()
     private var cancellables = Set<AnyCancellable>()
     var addItemHandler: ((DDay) -> Void)?
     
@@ -115,7 +115,7 @@ final class AddItemViewController: UIViewController {
 
 extension AddItemViewController {
     private func bind() {
-        let input = DDayListItemViewModel.Input(
+        let input = AddDDayViewModel.Input(
             titleStr: titleValue.eraseToAnyPublisher(),
             dateStr: dateValue.eraseToAnyPublisher(),
             isSwitchOn: switchValue.eraseToAnyPublisher(),

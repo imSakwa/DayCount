@@ -9,8 +9,6 @@ import UIKit
 
 final class DDayListItemTableViewCell: UITableViewCell {
     static let identifier = String(describing: DDayListItemTableViewCell.self)
-    
-    private let viewModel = DDayListItemViewModel()
         
     private let itemStackView: UIStackView = {
         let stackView = UIStackView(frame: .zero)
