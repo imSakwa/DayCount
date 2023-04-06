@@ -8,6 +8,9 @@
 import Combine
 import UIKit
 
+import SnapKit
+
+
 final class AddItemViewController: UIViewController {
     private var titles: [String] = []
     private var dates: [String] = []
@@ -26,7 +29,6 @@ final class AddItemViewController: UIViewController {
     
     private let titleTextField: UITextField = {
         let textField = UITextField(frame: .zero)
-        textField.translatesAutoresizingMaskIntoConstraints = false
         textField.attributedPlaceholder = NSAttributedString(
             string: "디데이 제목",
             attributes: [
@@ -42,13 +44,11 @@ final class AddItemViewController: UIViewController {
         stackView.axis = .horizontal
         stackView.distribution = .fill
         stackView.spacing = 15
-        stackView.translatesAutoresizingMaskIntoConstraints = false
         return stackView
     }()
     
-    private let dateTextField: UITextField = {
+    private lazy var dateTextField: UITextField = {
         let textField = UITextField(frame: .zero)
-        textField.translatesAutoresizingMaskIntoConstraints = false
         textField.attributedPlaceholder = NSAttributedString(
             string: "연도 / 월 / 일",
             attributes: [
@@ -75,7 +75,6 @@ final class AddItemViewController: UIViewController {
     
     private lazy var upDownSwitch: UISwitch = {
         let switchBtn = UISwitch(frame: .zero)
-        switchBtn.translatesAutoresizingMaskIntoConstraints = false
         switchBtn.isOn = false
         switchBtn.addTarget(self, action: #selector(changeSwitch), for: .valueChanged)
         return switchBtn
@@ -86,7 +85,6 @@ final class AddItemViewController: UIViewController {
         button.tintColor = .white
         button.setTitle("추가하기", for: .normal)
         button.layer.cornerRadius = 10
-        button.translatesAutoresizingMaskIntoConstraints = false
         button.isEnabled = false
         button.backgroundColor = .systemGray2
         return button
@@ -172,26 +170,23 @@ extension AddItemViewController {
         [titleTextField, dateStackView, doneBtn].forEach { view.addSubview($0) }
         [dateTextField, textLabel, upDownSwitch].forEach { dateStackView.addArrangedSubview($0) }
         
-        NSLayoutConstraint.activate([
-            titleTextField.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            titleTextField.topAnchor.constraint(equalTo: view.topAnchor, constant: 225),
-            titleTextField.widthAnchor.constraint(equalToConstant: view.bounds.width / 1.2),
-            titleTextField.heightAnchor.constraint(equalToConstant: view.bounds.height / 24),
-        ])
+        titleTextField.snp.makeConstraints {
+            $0.centerX.equalToSuperview()
+            $0.top.equalTo(view.safeAreaLayoutGuide).offset(200)
+            $0.width.equalToSuperview().dividedBy(1.2)
+            $0.height.equalToSuperview().dividedBy(24)
+        }
         
-        NSLayoutConstraint.activate([
-            dateStackView.topAnchor.constraint(equalTo: titleTextField.bottomAnchor, constant: 45),
-            dateStackView.leftAnchor.constraint(equalTo: titleTextField.leftAnchor),
-            dateStackView.rightAnchor.constraint(equalTo: titleTextField.rightAnchor),
-            dateStackView.widthAnchor.constraint(equalTo: titleTextField.widthAnchor),
-            dateStackView.heightAnchor.constraint(equalToConstant: view.bounds.height / 24)
-        ])
+        dateStackView.snp.makeConstraints {
+            $0.top.equalTo(titleTextField.snp.bottom).offset(45)
+            $0.directionalHorizontalEdges.size.equalTo(titleTextField)
+        }
         
-        NSLayoutConstraint.activate([
-            doneBtn.topAnchor.constraint(equalTo: dateStackView.bottomAnchor, constant: 100),
-            doneBtn.widthAnchor.constraint(equalToConstant: 150),
-            doneBtn.centerXAnchor.constraint(equalTo: view.centerXAnchor)
-        ])
+        doneBtn.snp.makeConstraints {
+            $0.top.equalTo(dateStackView.snp.bottom).offset(100)
+            $0.width.equalTo(150)
+            $0.centerX.equalToSuperview()
+        }
     }
 }
 

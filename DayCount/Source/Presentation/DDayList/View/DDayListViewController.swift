@@ -5,10 +5,12 @@
 //  Created by 창민 on 2021/05/21.
 //
 
+import Combine
 import CoreData
 import UIKit
 
-import Combine
+import SnapKit
+
 
 final class DDayListViewController: UIViewController {
    
@@ -18,7 +20,6 @@ final class DDayListViewController: UIViewController {
 
     private lazy var itemTableView: UITableView = {
         let tableView = UITableView(frame: .zero)
-        tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.separatorStyle = .none
         tableView.register(
             DDayListItemTableViewCell.self,
@@ -43,10 +44,6 @@ final class DDayListViewController: UIViewController {
         
     override func viewDidLoad() {
         super.viewDidLoad()
- 
-        overrideUserInterfaceStyle = .light
-        view.backgroundColor = .white
-        
         feedbackGenerator.prepare()    // 준비상태
         
         setupLayout()
@@ -59,24 +56,14 @@ final class DDayListViewController: UIViewController {
 extension DDayListViewController {
     
     private func setupLayout() {
+        view.backgroundColor = .systemBackground
+        
         view.addSubview(itemTableView)
         
-        NSLayoutConstraint.activate([
-            itemTableView.topAnchor.constraint(
-                equalTo: view.safeAreaLayoutGuide.topAnchor
-            ),
-            itemTableView.bottomAnchor.constraint(
-                equalTo: view.safeAreaLayoutGuide.bottomAnchor,
-                constant: -200
-            ),
-            itemTableView.centerXAnchor.constraint(
-                equalTo: view.centerXAnchor
-            ),
-            itemTableView.widthAnchor.constraint(
-                equalToConstant: UIScreen.main.bounds.width - 20
-            )
-        ])
-
+        itemTableView.snp.makeConstraints {
+            $0.top.bottom.equalTo(view.safeAreaLayoutGuide)
+            $0.directionalHorizontalEdges.equalToSuperview().inset(10)
+        }
     }
     
     @objc
@@ -146,10 +133,6 @@ extension DDayListViewController {
     }
 }
 
-class CustomSwipeGesture: UISwipeGestureRecognizer {
-    var itemView: DDayListItemTableViewCell?
-}
-
 // MARK: - UITableView Extension
 extension DDayListViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -171,7 +154,9 @@ extension DDayListViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: DDayListItemTableViewCell.identifier) as? DDayListItemTableViewCell else { return UITableViewCell() }
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: DDayListItemTableViewCell.identifier)
+                as? DDayListItemTableViewCell else { return UITableViewCell() }
+        
         cell.selectionStyle = .none
         cell.setupView(data: viewModel.getDDayItem(row: indexPath.row))
         return cell

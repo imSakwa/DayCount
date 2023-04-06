@@ -7,6 +7,9 @@
 
 import UIKit
 
+import SnapKit
+
+
 final class DDayListItemTableViewCell: UITableViewCell {
     static let identifier = String(describing: DDayListItemTableViewCell.self)
         
@@ -14,7 +17,6 @@ final class DDayListItemTableViewCell: UITableViewCell {
         let stackView = UIStackView(frame: .zero)
         stackView.axis = .horizontal
         stackView.distribution = .fillProportionally
-        stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.backgroundColor = .systemGray6
         stackView.layer.borderColor = UIColor.systemGray.cgColor
         stackView.layer.borderWidth = 3.0
@@ -27,14 +29,12 @@ final class DDayListItemTableViewCell: UITableViewCell {
         let label = UILabel(frame: .zero)
         label.textColor = .black
         label.font = UIFont.systemFont(ofSize: 18)
-        label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
     
     private let dateStackView: UIStackView = {
         let stackView = UIStackView(frame: .zero)
         stackView.axis = .vertical
-        stackView.translatesAutoresizingMaskIntoConstraints = false
         return stackView
     }()
     
@@ -43,7 +43,6 @@ final class DDayListItemTableViewCell: UITableViewCell {
         label.textColor = .black
         label.textAlignment = .right
         label.font = UIFont.systemFont(ofSize: 15)
-        label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
     
@@ -52,13 +51,11 @@ final class DDayListItemTableViewCell: UITableViewCell {
         label.textColor = .black
         label.textAlignment = .right
         label.font = UIFont.boldSystemFont(ofSize: 30)
-        label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        translatesAutoresizingMaskIntoConstraints = false
         
         setupLayout()
     }
@@ -101,38 +98,36 @@ extension DDayListItemTableViewCell {
         
         contentView.addSubview(itemStackView)
         
-        NSLayoutConstraint.activate([
-            contentView.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.width-20),
-            contentView.heightAnchor.constraint(equalToConstant: UIScreen.main.bounds.height/10)
-        ])
+        contentView.snp.makeConstraints {
+            $0.width.equalToSuperview().inset(20)
+            $0.height.equalToSuperview().dividedBy(10)
+        }
         
-        NSLayoutConstraint.activate([
-            itemStackView.leftAnchor.constraint(equalTo: contentView.leftAnchor),
-            itemStackView.rightAnchor.constraint(equalTo: contentView.rightAnchor),
-            itemStackView.topAnchor.constraint(equalTo: contentView.topAnchor),
-            itemStackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -5)
-        ])
+        itemStackView.snp.makeConstraints {
+            $0.top.directionalHorizontalEdges.equalToSuperview()
+            $0.bottom.equalToSuperview().inset(5)
+            
+        }
+        
+        titleLabel.snp.makeConstraints {
+            $0.leading.equalTo(itemStackView.snp.leading).offset(10)
+            $0.trailing.equalTo(dateStackView.snp.leading)
+        }
 
-        NSLayoutConstraint.activate([
-            titleLabel.leftAnchor.constraint(equalTo: itemStackView.leftAnchor, constant: 10),
-            titleLabel.rightAnchor.constraint(equalTo: dateStackView.leftAnchor)
-        ])
+        dateStackView.snp.makeConstraints {
+            $0.directionalVerticalEdges.equalToSuperview()
+            $0.trailing.equalToSuperview().inset(10)
+        }
         
-        NSLayoutConstraint.activate([
-            dateStackView.topAnchor.constraint(equalTo: itemStackView.topAnchor),
-            dateStackView.bottomAnchor.constraint(equalTo: itemStackView.bottomAnchor),
-            dateStackView.rightAnchor.constraint(equalTo: contentView.rightAnchor, constant: -10)
-        ])
-      
-        NSLayoutConstraint.activate([
-            dateLabel.topAnchor.constraint(equalTo: itemStackView.topAnchor, constant: 10),
-            dateLabel.rightAnchor.constraint(equalTo: dateStackView.rightAnchor, constant: -10),
-            dateLabel.heightAnchor.constraint(equalToConstant: UIScreen.main.bounds.height/30)
-        ])
-      
-        NSLayoutConstraint.activate([
-            ddaylabel.rightAnchor.constraint(equalTo: dateLabel.rightAnchor),
-            ddaylabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -10)
-        ])
+        dateLabel.snp.makeConstraints {
+            $0.top.equalTo(itemStackView).inset(10)
+            $0.trailing.equalToSuperview().inset(10)
+            $0.height.equalTo(UIScreen.main.bounds.height).dividedBy(30)
+        }
+        
+        ddaylabel.snp.makeConstraints {
+            $0.trailing.equalTo(dateLabel)
+            $0.bottom.equalToSuperview().inset(10)
+        }
     }
 }
