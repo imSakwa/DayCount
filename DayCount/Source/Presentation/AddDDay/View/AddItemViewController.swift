@@ -21,7 +21,6 @@ final class AddItemViewController: UIViewController {
     private var cancellables = Set<AnyCancellable>()
     var addItemHandler: ((DDay) -> Void)?
     
-    private let titleValue = PassthroughSubject<String, Never>()
     private let dateValue = PassthroughSubject<String, Never>()
     private let switchValue = PassthroughSubject<Bool, Never>()
     private let doneValue = PassthroughSubject<Void, Never>()
@@ -55,7 +54,9 @@ final class AddItemViewController: UIViewController {
                 NSAttributedString.Key.foregroundColor : #colorLiteral(red: 0.5966893435, green: 0.5931452513, blue: 0.5994156003, alpha: 1)
             ]
         )
+        textField.tintColor = .clear
         textField.textFieldConfig(view: textField)
+        textField.delegate = self
         return textField
     }()
     
@@ -70,6 +71,7 @@ final class AddItemViewController: UIViewController {
         let pickerview = UIPickerView(frame: .zero)
         pickerview.delegate = self
         pickerview.dataSource = self
+        dateTextField.inputView = pickerview
         return pickerview
     }()
     
@@ -100,21 +102,13 @@ final class AddItemViewController: UIViewController {
         setupView()
         setupLayout()
         bind()
-        
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy"
-        datePickerView.selectRow(Int(dateFormatter.string(from: Date()))!-2021, inComponent: 0, animated: false)
-        dateFormatter.dateFormat = "M"
-        datePickerView.selectRow(Int(dateFormatter.string(from: Date()))!-1, inComponent: 1, animated: false)
-        dateFormatter.dateFormat = "d"
-        datePickerView.selectRow(Int(dateFormatter.string(from: Date()))!-1, inComponent: 2, animated: false)
     }
 }
 
 extension AddItemViewController {
     private func bind() {
         let input = AddDDayViewModel.Input(
-            titleStr: titleValue.eraseToAnyPublisher(),
+            titleStr: titleTextField.publisher.eraseToAnyPublisher(),
             dateStr: dateValue.eraseToAnyPublisher(),
             isSwitchOn: switchValue.eraseToAnyPublisher(),
             tapDone: doneValue.eraseToAnyPublisher()
@@ -162,8 +156,23 @@ extension AddItemViewController {
     }
     
     private func setupView() {
-        view.backgroundColor = .white
-        dateTextField.inputView = datePickerView
+        view.backgroundColor = .systemBackground
+        
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy"
+        datePickerView.selectRow(Int(dateFormatter.string(from: Date()))!-2021,
+                                 inComponent: 0,
+                                 animated: false)
+        
+        dateFormatter.dateFormat = "M"
+        datePickerView.selectRow(Int(dateFormatter.string(from: Date()))!-1,
+                                 inComponent: 1,
+                                 animated: false)
+        
+        dateFormatter.dateFormat = "d"
+        datePickerView.selectRow(Int(dateFormatter.string(from: Date()))!-1,
+                                 inComponent: 2,
+                                 animated: false)
     }
     
     private func setupLayout() {
@@ -237,6 +246,16 @@ extension AddItemViewController: UIPickerViewDataSource, UIPickerViewDelegate {
         }
         
         dateTextField.text = year+"년 "+month+"월 "+day+"일"
+        dateValue.send(dateTextField.text ?? "")
     }
     
+}
+
+extension AddItemViewController: UITextFieldDelegate {
+    func textField(_ textField: UITextField,
+                   shouldChangeCharactersIn range: NSRange,
+                   replacementString string: String) -> Bool {
+        
+        return (textField == dateTextField) == false
+    }
 }

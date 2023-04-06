@@ -25,24 +25,20 @@ final class AddDDayViewModel: ViewModelType {
     private let ddayList: [DDay] = [DDay]()
     
     func transform(input: Input) -> Output {
-        let enableButtonCase1 = Publishers
-            .CombineLatest(input.titleStr, input.dateStr)
+        let enableButtonCase1 = input.titleStr
+            .combineLatest(input.dateStr)
             .map { !$0.0.isEmpty && !$0.1.isEmpty }
             .eraseToAnyPublisher()
         
-        let enableButtonCase2 = Publishers
-            .CombineLatest(input.titleStr, input.isSwitchOn)
+        let enableButtonCase2 = input.titleStr
+            .combineLatest(input.isSwitchOn)
             .map { !$0.0.isEmpty && $0.1 }
             .eraseToAnyPublisher()
         
-        let enableButton = Publishers
-            .CombineLatest(enableButtonCase1, enableButtonCase2)
-            .map { $0.0 || $0.1 }
+        let enableButton = enableButtonCase1
+            .merge(with: enableButtonCase2)
             .eraseToAnyPublisher()
         
-        let changeSwitch = input.isSwitchOn
-            .eraseToAnyPublisher()
-    
         let tapDoneButton = input.tapDone
             .zip(input.titleStr, input.dateStr, input.isSwitchOn)
             .eraseToAnyPublisher()
