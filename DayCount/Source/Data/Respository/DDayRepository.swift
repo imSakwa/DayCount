@@ -13,7 +13,7 @@ protocol DDayRepositoryProtocol {
     func saveDDay(item: DDay)
 }
 
-final class DDayRepository: DDayRespositoryProtocol {
+final class DDayRepository: DDayRepositoryProtocol {
 
 }
 
