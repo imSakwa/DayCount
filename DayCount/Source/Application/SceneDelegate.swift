@@ -18,7 +18,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
         guard let windowScene = (scene as? UIWindowScene) else { return }
         window = UIWindow(windowScene: windowScene)
-        window?.rootViewController = DDayListViewController() // RootViewController를 연결
+        
+        let respository = DDayRepository()
+        let usecase = AddDDayUseCase(respository: respository)
+        let viewModel = DDayListViewModel(useCase: usecase)
+        window?.rootViewController = DDayListViewController(viewModel: viewModel)
         window?.makeKeyAndVisible()
     }
 

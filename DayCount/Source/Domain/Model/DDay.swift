@@ -19,3 +19,5 @@ struct DDay: Codable {
         self.isSwitchOn = isSwitchOn
     }
 }
+
+typealias DDayList = [DDay]

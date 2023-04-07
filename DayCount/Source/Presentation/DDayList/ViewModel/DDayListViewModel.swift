@@ -6,11 +6,19 @@
 //
 
 import Combine
+import CoreData
 import Foundation
 
 final class DDayListViewModel: ViewModelType {
     private var subscriptions = Set<AnyCancellable>()
-    private var ddayList: [DDay] = []
+    private var ddayList: DDayList = []
+    private let addDDayUseCase: AddDDayUseCaseProtocol
+    
+    init(useCase: AddDDayUseCaseProtocol) {
+        addDDayUseCase = useCase
+        
+        getDDayList()
+    }
     
     struct Input {
         let tapAddButton: AnyPublisher<Void, Never>
@@ -26,10 +34,20 @@ final class DDayListViewModel: ViewModelType {
         
         return Output(buttonTap: buttonTap)
     }
-    
-    
-    func addDDayItem(item: DDay) {
+}
+
+extension DDayListViewModel {
+    /// Model에 데이터 추가
+    func addDDayItem(item: DDay, appDelegate: AppDelegate) {
         ddayList.append(item)
+        
+        addDDayUseCase.addDDay(item: item)
+    }
+    
+    private func getDDayList() {
+        if let ddayList = addDDayUseCase.getDDay() {
+            self.ddayList = ddayList
+        }
     }
     
     func initDDayArray(array: [DDay]) {

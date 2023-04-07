@@ -15,8 +15,9 @@ import SnapKit
 final class DDayListViewController: UIViewController {
    
     private var cancellables = Set<AnyCancellable>()
-    private var viewModel = DDayListViewModel()
     private let tapButton = PassthroughSubject<Void, Never>()
+    
+    private var viewModel: DDayListViewModel
 
     private lazy var itemTableView: UITableView = {
         let tableView = UITableView(frame: .zero)
@@ -41,14 +42,23 @@ final class DDayListViewController: UIViewController {
     private let feedbackGenerator: UISelectionFeedbackGenerator = {
         return UISelectionFeedbackGenerator()
     }()
+    
+    init(viewModel: DDayListViewModel) {
+        self.viewModel = viewModel
         
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         feedbackGenerator.prepare()    // 준비상태
         
         setupLayout()
         bind()
-        fetchDDay()
     }
 }
 
@@ -87,49 +97,12 @@ extension DDayListViewController {
     private func moveToAddItemVC() {
         let addItemVC = AddItemViewController()
         addItemVC.addItemHandler = { [weak self] item in
-            self?.viewModel.addDDayItem(item: item)
+            let appDelegate = UIApplication.shared.delegate as! AppDelegate
+            
+            self?.viewModel.addDDayItem(item: item, appDelegate: appDelegate)
             self?.itemTableView.reloadData()
-            self?.saveInCoreData(item: item)
         }
         present(addItemVC, animated: true)
-    }
-    
-    private func fetchDDay() {
-        let appDelegate = UIApplication.shared.delegate as! AppDelegate
-        let context = appDelegate.persistentContainer.viewContext
-            
-        do {
-            let dday = try context.fetch(DDayModel.fetchRequest()) as! [DDayModel]
-            var list = [DDay]()
-            
-            for model in dday {
-                list.append(DDay(title: model.title!, date: model.date!, isSwitchOn: model.isSwitchOn))
-            }
-            viewModel.initDDayArray(array: list)
-            itemTableView.reloadData()
-            
-        } catch {
-           print(error.localizedDescription)
-        }
-    }
-    
-    private func saveInCoreData(item: DDay) {
-        let appDelegate = UIApplication.shared.delegate as! AppDelegate
-        let context = appDelegate.persistentContainer.viewContext
-        let entity = NSEntityDescription.entity(forEntityName: "DDayModel", in: context)
-                
-        if let entity = entity {
-            let dday = NSManagedObject(entity: entity, insertInto: context)
-            dday.setValue(item.title, forKey: "title")
-            dday.setValue(item.date, forKey: "date")
-            dday.setValue(item.isSwitchOn, forKey: "isSwitchOn")
-        }
-        
-        do {
-             try context.save()
-           } catch {
-             print(error.localizedDescription)
-           }
     }
 }
 
