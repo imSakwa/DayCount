@@ -1,5 +1,5 @@
 //
-//  AddDDayUseCase.swift
+//  DDayUseCase.swift
 //  DayCount
 //
 //  Created by ChangMin on 2023/04/07.
@@ -7,12 +7,12 @@
 
 import Foundation
 
-protocol AddDDayUseCaseProtocol {
+protocol DDayUseCaseProtocol {
     func addDDay(item: DDay)
     func getDDay() -> DDayList?
 }
 
-final class AddDDayUseCase: AddDDayUseCaseProtocol {
+final class DDayUseCase: DDayUseCaseProtocol {
     private let ddayRespository: DDayRepositoryProtocol
     
     init(respository: DDayRepositoryProtocol) {
@@ -20,7 +20,7 @@ final class AddDDayUseCase: AddDDayUseCaseProtocol {
     }
 }
 
-extension AddDDayUseCase {
+extension DDayUseCase {
     func addDDay(item: DDay) {
         ddayRespository.saveDDay(item: item)
     }

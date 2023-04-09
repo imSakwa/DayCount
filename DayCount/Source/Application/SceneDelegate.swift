@@ -20,7 +20,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window = UIWindow(windowScene: windowScene)
         
         let respository = DDayRepository()
-        let usecase = AddDDayUseCase(respository: respository)
+        let usecase = DDayUseCase(respository: respository)
         let viewModel = DDayListViewModel(useCase: usecase)
         window?.rootViewController = DDayListViewController(viewModel: viewModel)
         window?.makeKeyAndVisible()

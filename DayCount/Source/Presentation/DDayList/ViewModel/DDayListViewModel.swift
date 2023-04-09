@@ -12,10 +12,10 @@ import Foundation
 final class DDayListViewModel: ViewModelType {
     private var subscriptions = Set<AnyCancellable>()
     private var ddayList: DDayList = []
-    private let addDDayUseCase: AddDDayUseCaseProtocol
+    private let ddayUseCase: DDayUseCaseProtocol
     
-    init(useCase: AddDDayUseCaseProtocol) {
-        addDDayUseCase = useCase
+    init(useCase: DDayUseCaseProtocol) {
+        ddayUseCase = useCase
         
         getDDayList()
     }
@@ -41,11 +41,11 @@ extension DDayListViewModel {
     func addDDayItem(item: DDay) {
         ddayList.append(item)
         
-        addDDayUseCase.addDDay(item: item)
+        ddayUseCase.addDDay(item: item)
     }
     
     private func getDDayList() {
-        if let ddayList = addDDayUseCase.getDDay() {
+        if let ddayList = ddayUseCase.getDDay() {
             self.ddayList = ddayList
         }
     }
