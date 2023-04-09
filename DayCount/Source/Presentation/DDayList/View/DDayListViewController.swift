@@ -97,9 +97,7 @@ extension DDayListViewController {
     private func moveToAddItemVC() {
         let addItemVC = AddItemViewController()
         addItemVC.addItemHandler = { [weak self] item in
-            let appDelegate = UIApplication.shared.delegate as! AppDelegate
-            
-            self?.viewModel.addDDayItem(item: item, appDelegate: appDelegate)
+            self?.viewModel.addDDayItem(item: item)
             self?.itemTableView.reloadData()
         }
         present(addItemVC, animated: true)

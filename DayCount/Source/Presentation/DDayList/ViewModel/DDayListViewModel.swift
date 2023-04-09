@@ -38,7 +38,7 @@ final class DDayListViewModel: ViewModelType {
 
 extension DDayListViewModel {
     /// Model에 데이터 추가
-    func addDDayItem(item: DDay, appDelegate: AppDelegate) {
+    func addDDayItem(item: DDay) {
         ddayList.append(item)
         
         addDDayUseCase.addDDay(item: item)
