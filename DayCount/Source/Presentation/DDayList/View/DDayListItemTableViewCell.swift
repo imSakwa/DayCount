@@ -28,29 +28,25 @@ final class DDayListItemTableViewCell: UITableViewCell {
     private let titleLabel: UILabel = {
         let label = UILabel(frame: .zero)
         label.textColor = .black
-        label.font = UIFont.systemFont(ofSize: 18)
+        label.font = .systemFont(ofSize: 18)
         return label
     }()
     
-    private let dateStackView: UIStackView = {
-        let stackView = UIStackView(frame: .zero)
-        stackView.axis = .vertical
-        return stackView
+    private let dateInfoView: UIView = {
+        return UIView(frame: .zero)
     }()
     
     private let dateLabel: UILabel = {
         let label = UILabel(frame: .zero)
         label.textColor = .black
-        label.textAlignment = .right
-        label.font = UIFont.systemFont(ofSize: 15)
+        label.font = .systemFont(ofSize: 15)
         return label
     }()
     
     private let ddaylabel: UILabel = {
         let label = UILabel(frame: .zero)
         label.textColor = .black
-        label.textAlignment = .right
-        label.font = UIFont.boldSystemFont(ofSize: 30)
+        label.font = .boldSystemFont(ofSize: 30)
         return label
     }()
     
@@ -69,7 +65,7 @@ extension DDayListItemTableViewCell {
         dateFormatter.dateFormat = "yyyy년 M월 d일"
         
         let todayDate: Date = dateFormatter.date(from: dateFormatter.string(from: Date()))!
-        let inputDate: Date = dateFormatter.date(from: date)!
+        let inputDate: Date = dateFormatter.date(from: date) ?? Date()
         
         let aCase = todayDate.timeIntervalSince(inputDate)
         let bCase = inputDate.timeIntervalSince(todayDate)
@@ -93,40 +89,34 @@ extension DDayListItemTableViewCell {
     }
     
     private func setupLayout(){
-        [dateLabel, ddaylabel].forEach { dateStackView.addArrangedSubview($0) }
-        [titleLabel, dateStackView].forEach { itemStackView.addArrangedSubview($0) }
-        
         contentView.addSubview(itemStackView)
-        
-        contentView.snp.makeConstraints {
-            $0.width.equalToSuperview().inset(20)
-            $0.height.equalToSuperview().dividedBy(10)
-        }
+        [dateLabel, ddaylabel].forEach { dateInfoView.addSubview($0) }
+        [titleLabel, dateInfoView].forEach { itemStackView.addArrangedSubview($0) }
         
         itemStackView.snp.makeConstraints {
             $0.top.directionalHorizontalEdges.equalToSuperview()
-            $0.bottom.equalToSuperview().inset(5)
-            
+            $0.bottom.equalToSuperview().inset(10)
         }
         
         titleLabel.snp.makeConstraints {
-            $0.leading.equalTo(itemStackView.snp.leading).offset(10)
-            $0.trailing.equalTo(dateStackView.snp.leading)
+            $0.leading.equalToSuperview().inset(10)
+            $0.trailing.equalTo(dateInfoView.snp.leading)
         }
 
-        dateStackView.snp.makeConstraints {
+        dateInfoView.snp.makeConstraints {
             $0.directionalVerticalEdges.equalToSuperview()
             $0.trailing.equalToSuperview().inset(10)
         }
         
+        
         dateLabel.snp.makeConstraints {
-            $0.top.equalTo(itemStackView).inset(10)
+            $0.top.equalToSuperview().inset(10)
             $0.trailing.equalToSuperview().inset(10)
-            $0.height.equalTo(UIScreen.main.bounds.height).dividedBy(30)
         }
         
         ddaylabel.snp.makeConstraints {
-            $0.trailing.equalTo(dateLabel)
+            $0.top.equalTo(dateLabel.snp.bottom)
+            $0.trailing.equalToSuperview().inset(10)
             $0.bottom.equalToSuperview().inset(10)
         }
     }
