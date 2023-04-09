@@ -89,6 +89,7 @@ final class AddItemViewController: UIViewController {
         button.layer.cornerRadius = 10
         button.isEnabled = false
         button.backgroundColor = .systemGray2
+        button.addTarget(self, action: #selector(tapDoneButton), for: .touchUpInside)
         return button
     }()
     
@@ -123,15 +124,14 @@ extension AddItemViewController {
             }
             .store(in: &cancellables)
 
-        
-        output.tapDoneButton
+        output.ddayItem
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] (value1, value2, value3, value4) in
-                let newItem = DDay(title: value2, date: value3, isSwitchOn: value4)
-                self?.addItemHandler?(newItem)
+            .sink { [weak self] dday in
+                self?.addItemHandler?(dday)
                 self?.dismiss(animated: true)
             }
             .store(in: &cancellables)
+
     }
     
     // 오늘부터 switch on/off 동작 함수
@@ -153,6 +153,12 @@ extension AddItemViewController {
         dateTextField.sendActions(for: .valueChanged)
         switchOn = !switchOn
         dateTextField.isEnabled = !dateTextField.isEnabled
+        dateValue.send(dateTextField.text ?? "")
+    }
+    
+    @objc
+    private func tapDoneButton(_ sender: UIButton) {
+        doneValue.send()
     }
     
     private func setupView() {

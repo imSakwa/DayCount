@@ -18,13 +18,37 @@ final class AddDDayViewModel: ViewModelType {
     
     struct Output {
         let enableSaveButton: AnyPublisher<Bool, Never>
-        let tapDoneButton: AnyPublisher<(Void, String, String, Bool), Never>
+        let ddayItem: AnyPublisher<DDay, Never>
     }
     
-    var cancel = Set<AnyCancellable>()
+    private var cancellables = Set<AnyCancellable>()
     private let ddayList: [DDay] = [DDay]()
     
     func transform(input: Input) -> Output {
+        let titleSubject = CurrentValueSubject<String, Never>("")
+        let dateSubject = CurrentValueSubject<String, Never>("")
+        let isSwitchOnSubject = CurrentValueSubject<Bool, Never>(false)
+        let ddaySubject = PassthroughSubject<DDay, Never>()
+        
+        input.titleStr
+            .sink {
+                titleSubject.send($0)
+            }
+            .store(in: &cancellables)
+        
+        input.dateStr
+            .print("Date: ")
+            .sink {
+                dateSubject.send($0)
+            }
+            .store(in: &cancellables)
+        
+        input.isSwitchOn
+            .sink {
+                isSwitchOnSubject.send($0)
+            }
+            .store(in: &cancellables)
+        
         let enableButtonCase1 = input.titleStr
             .combineLatest(input.dateStr)
             .map { !$0.0.isEmpty && !$0.1.isEmpty }
@@ -39,13 +63,20 @@ final class AddDDayViewModel: ViewModelType {
             .merge(with: enableButtonCase2)
             .eraseToAnyPublisher()
         
-        let tapDoneButton = input.tapDone
-            .zip(input.titleStr, input.dateStr, input.isSwitchOn)
-            .eraseToAnyPublisher()
+        input.tapDone
+            .sink(receiveValue: { _ in
+                let dday = DDay(title: titleSubject.value,
+                                date: dateSubject.value,
+                                isSwitchOn: isSwitchOnSubject.value)
+                
+                ddaySubject.send(dday)
+            })
+            .store(in: &cancellables)
         
         return Output(
             enableSaveButton: enableButton,
-            tapDoneButton: tapDoneButton
+            ddayItem: ddaySubject.eraseToAnyPublisher()
+//            tapDoneButton: tapDoneButton
         )
     }
 }
