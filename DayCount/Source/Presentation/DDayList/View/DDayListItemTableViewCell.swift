@@ -94,8 +94,8 @@ extension DDayListItemTableViewCell {
         [titleLabel, dateInfoView].forEach { itemStackView.addArrangedSubview($0) }
         
         itemStackView.snp.makeConstraints {
-            $0.top.directionalHorizontalEdges.equalToSuperview()
-            $0.bottom.equalToSuperview().inset(10)
+            $0.directionalHorizontalEdges.equalToSuperview()
+            $0.directionalVerticalEdges.equalToSuperview().inset(5)
         }
         
         titleLabel.snp.makeConstraints {

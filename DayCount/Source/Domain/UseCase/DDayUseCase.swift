@@ -10,6 +10,7 @@ import Foundation
 protocol DDayUseCaseProtocol {
     func addDDay(item: DDay)
     func getDDay() -> DDayList?
+    func removeDDay(item: DDay)
 }
 
 final class DDayUseCase: DDayUseCaseProtocol {
@@ -27,5 +28,9 @@ extension DDayUseCase {
     
     func getDDay() -> DDayList? {
         return ddayRespository.fetchDDay()
+    }
+    
+    func removeDDay(item: DDay) {
+        ddayRespository.removeDDay(item: item)
     }
 }

@@ -11,6 +11,7 @@ import Foundation
 protocol DDayRepositoryProtocol {
     func fetchDDay() -> DDayList?
     func saveDDay(item: DDay)
+    func removeDDay(item: DDay)
 }
 
 final class DDayRepository: DDayRepositoryProtocol {
@@ -53,6 +54,23 @@ extension DDayRepository {
         } catch {
             print(error.localizedDescription)
         }
+    }
+    
+    func removeDDay(item: DDay) {
+        let context = CoreDataManager.shared.managedObjectContext
+        let request = NSFetchRequest<NSFetchRequestResult>(entityName: "DDayModel")
+        let predicate = NSPredicate(format: "title == %@", item.title)
+        request.predicate = predicate
         
+        let result = try! CoreDataManager.shared.managedObjectContext.fetch(request)
+        if let objectToDelete = result.first as? NSManagedObject {
+            context.delete(objectToDelete)
+        }
+        
+        do {
+            try context.save()
+        } catch {
+            print(error.localizedDescription)
+        }
     }
 }

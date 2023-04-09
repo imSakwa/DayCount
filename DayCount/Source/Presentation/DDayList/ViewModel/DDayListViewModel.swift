@@ -44,6 +44,11 @@ extension DDayListViewModel {
         ddayUseCase.addDDay(item: item)
     }
     
+    func removeDDayItem(row: Int) {
+        ddayUseCase.removeDDay(item: ddayList[row])
+        let _ = ddayList.remove(at: row)
+    }
+    
     private func getDDayList() {
         if let ddayList = ddayUseCase.getDDay() {
             self.ddayList = ddayList

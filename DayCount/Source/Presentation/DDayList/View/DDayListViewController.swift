@@ -132,4 +132,20 @@ extension DDayListViewController: UITableViewDataSource {
         cell.setupView(data: viewModel.getDDayItem(row: indexPath.row))
         return cell
     }
+    
+    func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle {
+        return .delete
+    }
+    
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        
+        if editingStyle == .delete {
+            tableView.beginUpdates()
+            viewModel.removeDDayItem(row: indexPath.row)
+            tableView.deleteRows(at: [indexPath], with: .automatic)
+            tableView.endUpdates()
+            
+
+        }
+    }
 }
