@@ -8,7 +8,7 @@
 import Foundation
 import CoreData
 
-struct DDay: Codable {
+struct DDay: Codable, Hashable {
     var title: String
     var date: String
     var isSwitchOn: Bool

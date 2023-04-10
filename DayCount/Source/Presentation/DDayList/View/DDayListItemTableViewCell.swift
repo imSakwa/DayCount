@@ -10,6 +10,10 @@ import UIKit
 import SnapKit
 
 
+enum Section: CaseIterable {
+    case main
+}
+
 final class DDayListItemTableViewCell: UITableViewCell {
     static let identifier = String(describing: DDayListItemTableViewCell.self)
         

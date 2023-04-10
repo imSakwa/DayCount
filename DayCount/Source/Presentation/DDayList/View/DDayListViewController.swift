@@ -16,8 +16,8 @@ final class DDayListViewController: UIViewController {
    
     private var cancellables = Set<AnyCancellable>()
     private let tapButton = PassthroughSubject<Void, Never>()
-    
-    private var viewModel: DDayListViewModel
+    private var ddayDataSource: UITableViewDiffableDataSource<Section, DDay>!
+    private let viewModel: DDayListViewModel
 
     private lazy var itemTableView: UITableView = {
         let tableView = UITableView(frame: .zero)
@@ -28,7 +28,6 @@ final class DDayListViewController: UIViewController {
         )
         tableView.tableFooterView = plusbutton
         tableView.delegate = self
-        tableView.dataSource = self
         return tableView
     }()
     
@@ -58,6 +57,8 @@ final class DDayListViewController: UIViewController {
         feedbackGenerator.prepare()    // 준비상태
         
         setupLayout()
+        setupTableViewDataSource()
+        configureSnapshot()
         bind()
     }
 }
@@ -74,6 +75,32 @@ extension DDayListViewController {
             $0.top.bottom.equalTo(view.safeAreaLayoutGuide)
             $0.directionalHorizontalEdges.equalToSuperview().inset(10)
         }
+    }
+    
+    private func setupTableViewDataSource() {
+        ddayDataSource = UITableViewDiffableDataSource<Section, DDay> (
+            tableView: itemTableView,
+            cellProvider: { (tableView, indexPath, itemIdentifier) -> UITableViewCell? in
+                
+                guard let cell = tableView.dequeueReusableCell(
+                    withIdentifier: DDayListItemTableViewCell.identifier,
+                    for: indexPath
+                ) as? DDayListItemTableViewCell else { return nil }
+                
+                cell.selectionStyle = .none
+                cell.setupView(data: self.viewModel.getDDayItem(row: indexPath.row))
+                
+                return cell
+        })
+    }
+    
+    private func configureSnapshot() {
+        viewModel.fetchDDayList()
+        
+        var snapShot = NSDiffableDataSourceSnapshot<Section, DDay>()
+        snapShot.appendSections([.main])
+        snapShot.appendItems(viewModel.getDDayList())
+        ddayDataSource.apply(snapShot)
     }
     
     @objc
@@ -98,7 +125,7 @@ extension DDayListViewController {
         let addItemVC = AddItemViewController()
         addItemVC.addItemHandler = { [weak self] item in
             self?.viewModel.addDDayItem(item: item)
-            self?.itemTableView.reloadData()
+            self?.configureSnapshot()
         }
         present(addItemVC, animated: true)
     }
@@ -117,34 +144,19 @@ extension DDayListViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
         return plusbutton
     }
-}
-
-extension DDayListViewController: UITableViewDataSource {
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return viewModel.getDDayArrayCount()
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: DDayListItemTableViewCell.identifier)
-                as? DDayListItemTableViewCell else { return UITableViewCell() }
-        
-        cell.selectionStyle = .none
-        cell.setupView(data: viewModel.getDDayItem(row: indexPath.row))
-        return cell
-    }
     
     func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle {
         return .delete
     }
-    
+
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-        
+
         if editingStyle == .delete {
             tableView.beginUpdates()
             viewModel.removeDDayItem(row: indexPath.row)
             tableView.deleteRows(at: [indexPath], with: .automatic)
             tableView.endUpdates()
-            
+
 
         }
     }

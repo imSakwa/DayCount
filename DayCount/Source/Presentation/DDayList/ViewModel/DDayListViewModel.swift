@@ -16,8 +16,6 @@ final class DDayListViewModel: ViewModelType {
     
     init(useCase: DDayUseCaseProtocol) {
         ddayUseCase = useCase
-        
-        getDDayList()
     }
     
     struct Input {
@@ -49,7 +47,7 @@ extension DDayListViewModel {
         let _ = ddayList.remove(at: row)
     }
     
-    private func getDDayList() {
+    func fetchDDayList() {
         if let ddayList = ddayUseCase.getDDay() {
             self.ddayList = ddayList
         }
@@ -61,6 +59,10 @@ extension DDayListViewModel {
     
     func getDDayItem(row: Int) -> DDay {
         return ddayList[row]
+    }
+    
+    func getDDayList() -> DDayList {
+        return ddayList
     }
     
     func getDDayArrayCount() -> Int {
