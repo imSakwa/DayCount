@@ -15,7 +15,11 @@ import SnapKit
 final class DDayListViewController: UIViewController {
    
     private var cancellables = Set<AnyCancellable>()
-    private let tapButton = PassthroughSubject<Void, Never>()
+    private let tapAddButton = PassthroughSubject<Void, Never>()
+    private let tapFilterButton = PassthroughSubject<Void, Never>()
+    private let tapMoreButton = PassthroughSubject<Void, Never>()
+    
+    
     private var ddayDataSource: UITableViewDiffableDataSource<Section, DDay>!
     private let viewModel: DDayListViewModel
 
@@ -42,6 +46,13 @@ final class DDayListViewController: UIViewController {
         return UISelectionFeedbackGenerator()
     }()
     
+    private let listSettingView: ListSettingView = {
+        return ListSettingView(frame: .zero)
+    }()
+    
+    private let filterButton = ListSettingView().filterButton
+    private let moreButton = ListSettingView().moreButton
+    
     init(viewModel: DDayListViewModel) {
         self.viewModel = viewModel
         
@@ -59,6 +70,8 @@ final class DDayListViewController: UIViewController {
         setupLayout()
         setupTableViewDataSource()
         configureSnapshot()
+        configureFilterButton()
+        configureMoreButton()
         bind()
     }
 }
@@ -69,10 +82,18 @@ extension DDayListViewController {
     private func setupLayout() {
         view.backgroundColor = .systemBackground
         
-        view.addSubview(itemTableView)
+        [listSettingView, itemTableView]
+            .forEach { view.addSubview($0) }
+        
+        listSettingView.snp.makeConstraints {
+            $0.top.equalTo(view.safeAreaLayoutGuide)
+            $0.directionalHorizontalEdges.equalToSuperview()
+            $0.height.equalTo(36)
+        }
         
         itemTableView.snp.makeConstraints {
-            $0.top.bottom.equalTo(view.safeAreaLayoutGuide)
+            $0.top.equalTo(listSettingView.snp.bottom)
+            $0.bottom.equalTo(view.safeAreaLayoutGuide)
             $0.directionalHorizontalEdges.equalToSuperview().inset(10)
         }
     }
@@ -103,14 +124,33 @@ extension DDayListViewController {
         ddayDataSource.apply(snapShot)
     }
     
+    private func configureFilterButton() {
+        let filterAction = UIAction { action in
+            self.tapFilterButton.send()
+        }
+        filterButton.addAction(filterAction, for: .touchUpInside)
+    }
+    
+    private func configureMoreButton() {
+        let moreAction = UIAction { _ in
+            self.tapMoreButton.send()
+        }
+        moreButton.addAction(moreAction, for: .touchUpInside)
+    }
+    
     @objc
     private func clickPlusButton(_ sender: UIButton) {
-        tapButton.send()
+        tapAddButton.send()
     }
     
     // 뷰-뷰모델 바인딩
     private func bind(){
-        let input = DDayListViewModel.Input(tapAddButton: tapButton.eraseToAnyPublisher())
+        let input = DDayListViewModel.Input(
+            tapAddButton: tapAddButton.eraseToAnyPublisher(),
+            tapFilterButton: tapFilterButton.eraseToAnyPublisher(),
+            tapMoreButton: tapMoreButton.eraseToAnyPublisher()
+        )
+        
         let output = viewModel.transform(input: input)
         
         output.buttonTap
