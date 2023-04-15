@@ -13,14 +13,22 @@ import SnapKit
 final class ListSettingView: UIView {
     
     private(set) var filterButton: UIButton = {
-        let button = UIButton(frame: .zero)
-        button.setImage(UIImage(systemName: "line.3.horizontal.decrease.circle"), for: .normal)
+        let button =  UIButton(type: .custom)
+        let imageConig = UIImage.SymbolConfiguration(pointSize: 24)
+        let image = UIImage(systemName: "line.3.horizontal.decrease.circle",
+                            withConfiguration: imageConig)
+        button.setImage(image, for: .normal)
+        button.imageView?.contentMode = .scaleToFill
+      
         return button
     }()
     
     private(set) var moreButton: UIButton = {
-        let button = UIButton(frame: .zero)
-        button.setImage(UIImage(systemName: "ellipsis.circle"), for: .normal)
+        let button = UIButton(type: .custom)
+        let imageConig = UIImage.SymbolConfiguration(pointSize: 24)
+        let image = UIImage(systemName: "ellipsis.circle",
+                            withConfiguration: imageConig)
+        button.setImage(image, for: .normal)
         return button
     }()
     
