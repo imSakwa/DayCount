@@ -9,10 +9,26 @@ import Combine
 import CoreData
 import Foundation
 
+enum ActionType: String {
+    case filter = "필터"
+    case more = "더보기"
+}
+
 final class DDayListViewModel: ViewModelType {
     private var cancellables = Set<AnyCancellable>()
     private var ddayList: DDayList = []
     private let ddayUseCase: DDayUseCaseProtocol
+    
+    let moreTitleArray = [
+        "리스트",
+        "정사각형"
+    ]
+    
+    let filterTitleArray = [
+        "기념일",
+        "생일",
+        "여행계획"
+    ]
     
     init(useCase: DDayUseCaseProtocol) {
         ddayUseCase = useCase
@@ -20,8 +36,8 @@ final class DDayListViewModel: ViewModelType {
     
     struct Input {
         let tapAddButton: AnyPublisher<Void, Never>
-        let tapFilterButton: AnyPublisher<Void, Never>
-        let tapMoreButton: AnyPublisher<Void, Never>
+        let tapFilterButton: AnyPublisher<String, Never>
+        let tapMoreButton: AnyPublisher<String, Never>
     }
     
     struct Output {
@@ -33,14 +49,14 @@ final class DDayListViewModel: ViewModelType {
             .eraseToAnyPublisher()
         
         input.tapFilterButton
-            .sink { _ in
-                print("tap Filter")
+            .sink { value in
+                print(value)
             }
             .store(in: &cancellables)
         
         input.tapMoreButton
-            .sink { _ in
-                print("tap more")
+            .sink { value in
+                print(value)
             }
             .store(in: &cancellables)
         
@@ -81,5 +97,18 @@ extension DDayListViewModel {
     
     func getDDayArrayCount() -> Int {
         return ddayList.count
+    }
+    
+    
+    /// 액션에 따른 타이틀 담긴 배열 반환
+    /// - Parameter type: 액션의 타입
+    /// - Returns: 액션 타이틀 배열
+    func getActionTitleArray(type: ActionType) -> [String] {
+        switch type {
+        case .filter:
+            return filterTitleArray
+        case .more:
+            return moreTitleArray
+        }
     }
 }

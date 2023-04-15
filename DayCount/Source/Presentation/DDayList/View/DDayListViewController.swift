@@ -16,8 +16,8 @@ final class DDayListViewController: UIViewController {
    
     private var cancellables = Set<AnyCancellable>()
     private let tapAddButton = PassthroughSubject<Void, Never>()
-    private let tapFilterButton = PassthroughSubject<Void, Never>()
-    private let tapMoreButton = PassthroughSubject<Void, Never>()
+    private let tapFilterButton = PassthroughSubject<String, Never>()
+    private let tapMoreButton = PassthroughSubject<String, Never>()
     
     
     private var ddayDataSource: UITableViewDiffableDataSource<Section, DDay>!
@@ -50,9 +50,6 @@ final class DDayListViewController: UIViewController {
         return ListSettingView(frame: .zero)
     }()
     
-    private let filterButton = ListSettingView().filterButton
-    private let moreButton = ListSettingView().moreButton
-    
     init(viewModel: DDayListViewModel) {
         self.viewModel = viewModel
         
@@ -70,9 +67,15 @@ final class DDayListViewController: UIViewController {
         setupLayout()
         setupTableViewDataSource()
         configureSnapshot()
+
+        bind()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
         configureFilterButton()
         configureMoreButton()
-        bind()
     }
 }
 
@@ -124,18 +127,20 @@ extension DDayListViewController {
         ddayDataSource.apply(snapShot)
     }
     
+    /// ListSettingView - FilterButton 설정 메서드
     private func configureFilterButton() {
-        let filterAction = UIAction { action in
-            self.tapFilterButton.send()
+        let filterAction = UIAction { _ in
+            self.showActionSheet(type: .filter)
         }
-        filterButton.addAction(filterAction, for: .touchUpInside)
+        listSettingView.filterButton.addAction(filterAction, for: .touchUpInside)
     }
     
+    /// ListSettingView - MoreButton 설정 메서드
     private func configureMoreButton() {
         let moreAction = UIAction { _ in
-            self.tapMoreButton.send()
+            self.showActionSheet(type: .more)
         }
-        moreButton.addAction(moreAction, for: .touchUpInside)
+        listSettingView.moreButton.addAction(moreAction, for: .touchUpInside)
     }
     
     @objc
@@ -168,6 +173,29 @@ extension DDayListViewController {
             self?.configureSnapshot()
         }
         present(addItemVC, animated: true)
+    }
+    
+    private func showActionSheet(type: ActionType) {
+        let alertController = UIAlertController(
+            title: type.rawValue,
+            message: nil,
+            preferredStyle: .actionSheet
+        )
+        
+        for actionTitle in viewModel.getActionTitleArray(type: type) {
+            let action = UIAlertAction(title: actionTitle, style: .default) { _ in
+                self.tapFilterButton.send(actionTitle)
+            }
+            
+            alertController.addAction(action)
+        }
+        
+        
+        let cancel = UIAlertAction(title: "취소", style: .cancel)
+        alertController.addAction(cancel)
+        
+        
+        present(alertController, animated: true)
     }
 }
 
