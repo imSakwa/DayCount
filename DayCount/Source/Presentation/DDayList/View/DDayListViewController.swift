@@ -23,16 +23,27 @@ final class DDayListViewController: UIViewController {
     private var ddayDataSource: UITableViewDiffableDataSource<Section, DDay>!
     private let viewModel: DDayListViewModel
 
-    private lazy var itemTableView: UITableView = {
-        let tableView = UITableView(frame: .zero)
-        tableView.separatorStyle = .none
-        tableView.register(
-            DDayListItemTableViewCell.self,
-            forCellReuseIdentifier: DDayListItemTableViewCell.identifier
+//    private lazy var itemTableView: UITableView = {
+//        let tableView = UITableView(frame: .zero)
+//        tableView.separatorStyle = .none
+//        tableView.register(
+//            DDayListItemTableViewCell.self,
+//            forCellReuseIdentifier: DDayListItemTableViewCell.identifier
+//        )
+//        tableView.tableFooterView = plusbutton
+//        tableView.delegate = self
+//        return tableView
+//    }()
+    
+    private lazy var itemCollectionView: UICollectionView = {
+        let collectionLayout = UICollectionViewFlowLayout()
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: collectionLayout)
+        collectionView.register(
+            DDaySquareItemCell.self,
+            forCellWithReuseIdentifier: DDaySquareItemCell.identifier
         )
-        tableView.tableFooterView = plusbutton
-        tableView.delegate = self
-        return tableView
+        collectionView.dataSource = self
+        return collectionView
     }()
     
     private lazy var plusbutton: UIButton = {
@@ -65,8 +76,8 @@ final class DDayListViewController: UIViewController {
         feedbackGenerator.prepare()    // 준비상태
         
         setupLayout()
-        setupTableViewDataSource()
-        configureSnapshot()
+//        setupTableViewDataSource()
+//        configureSnapshot()
 
         bind()
     }
@@ -85,7 +96,7 @@ extension DDayListViewController {
     private func setupLayout() {
         view.backgroundColor = .systemBackground
         
-        [listSettingView, itemTableView]
+        [listSettingView, itemCollectionView]
             .forEach { view.addSubview($0) }
         
         listSettingView.snp.makeConstraints {
@@ -94,38 +105,38 @@ extension DDayListViewController {
             $0.height.equalTo(36)
         }
         
-        itemTableView.snp.makeConstraints {
+        itemCollectionView.snp.makeConstraints {
             $0.top.equalTo(listSettingView.snp.bottom)
             $0.bottom.equalTo(view.safeAreaLayoutGuide)
             $0.directionalHorizontalEdges.equalToSuperview().inset(10)
         }
     }
     
-    private func setupTableViewDataSource() {
-        ddayDataSource = UITableViewDiffableDataSource<Section, DDay> (
-            tableView: itemTableView,
-            cellProvider: { (tableView, indexPath, itemIdentifier) -> UITableViewCell? in
-                
-                guard let cell = tableView.dequeueReusableCell(
-                    withIdentifier: DDayListItemTableViewCell.identifier,
-                    for: indexPath
-                ) as? DDayListItemTableViewCell else { return nil }
-                
-                cell.selectionStyle = .none
-                cell.setupView(data: self.viewModel.getDDayItem(row: indexPath.row))
-                
-                return cell
-        })
-    }
+//    private func setupTableViewDataSource() {
+//        ddayDataSource = UITableViewDiffableDataSource<Section, DDay> (
+//            tableView: itemTableView,
+//            cellProvider: { (tableView, indexPath, itemIdentifier) -> UITableViewCell? in
+//
+//                guard let cell = tableView.dequeueReusableCell(
+//                    withIdentifier: DDayListItemTableViewCell.identifier,
+//                    for: indexPath
+//                ) as? DDayListItemTableViewCell else { return nil }
+//
+//                cell.selectionStyle = .none
+//                cell.setupView(data: self.viewModel.getDDayItem(row: indexPath.row))
+//
+//                return cell
+//        })
+//    }
     
-    private func configureSnapshot() {
-        viewModel.fetchDDayList()
-        
-        var snapShot = NSDiffableDataSourceSnapshot<Section, DDay>()
-        snapShot.appendSections([.main])
-        snapShot.appendItems(viewModel.getDDayList())
-        ddayDataSource.apply(snapShot)
-    }
+//    private func configureSnapshot() {
+//        viewModel.fetchDDayList()
+//
+//        var snapShot = NSDiffableDataSourceSnapshot<Section, DDay>()
+//        snapShot.appendSections([.main])
+//        snapShot.appendItems(viewModel.getDDayList())
+//        ddayDataSource.apply(snapShot)
+//    }
     
     /// ListSettingView - FilterButton 설정 메서드
     private func configureFilterButton() {
@@ -170,7 +181,7 @@ extension DDayListViewController {
         let addItemVC = AddItemViewController()
         addItemVC.addItemHandler = { [weak self] item in
             self?.viewModel.addDDayItem(item: item)
-            self?.configureSnapshot()
+//            self?.configureSnapshot()
         }
         present(addItemVC, animated: true)
     }
@@ -200,32 +211,69 @@ extension DDayListViewController {
 }
 
 // MARK: - UITableView Extension
-extension DDayListViewController: UITableViewDelegate {
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return UIScreen.main.bounds.height / 10
+//extension DDayListViewController: UITableViewDelegate {
+//    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+//        return UIScreen.main.bounds.height / 10
+//    }
+//
+//    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+//        return 30
+//    }
+//
+//    func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+//        return plusbutton
+//    }
+//
+//    func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle {
+//        return .delete
+//    }
+//
+//    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+//
+//        if editingStyle == .delete {
+//            tableView.beginUpdates()
+//            viewModel.removeDDayItem(row: indexPath.row)
+//            tableView.deleteRows(at: [indexPath], with: .automatic)
+//            tableView.endUpdates()
+//
+//
+//        }
+//    }
+//}
+
+extension DDayListViewController: UICollectionViewDelegateFlowLayout {
+    func collectionView(
+        _ collectionView: UICollectionView,
+        layout collectionViewLayout: UICollectionViewLayout,
+        sizeForItemAt indexPath: IndexPath
+    ) -> CGSize {
+        
+        return CGSize(width: 100, height: 100)
+    }
+}
+
+extension DDayListViewController: UICollectionViewDataSource {
+    func collectionView(
+        _ collectionView: UICollectionView,
+        numberOfItemsInSection section: Int
+    ) -> Int {
+        
+        return 5
     }
     
-    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-        return 30
+    func collectionView(
+        _ collectionView: UICollectionView,
+        cellForItemAt indexPath: IndexPath
+    ) -> UICollectionViewCell {
+        
+        guard let cell = collectionView.dequeueReusableCell(
+            withReuseIdentifier: DDaySquareItemCell.identifier,
+            for: indexPath
+        ) as? DDaySquareItemCell else { return UICollectionViewCell() }
+        
+        cell.backgroundColor = .systemGray
+        return cell
     }
     
-    func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
-        return plusbutton
-    }
     
-    func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle {
-        return .delete
-    }
-
-    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-
-        if editingStyle == .delete {
-            tableView.beginUpdates()
-            viewModel.removeDDayItem(row: indexPath.row)
-            tableView.deleteRows(at: [indexPath], with: .automatic)
-            tableView.endUpdates()
-
-
-        }
-    }
 }
