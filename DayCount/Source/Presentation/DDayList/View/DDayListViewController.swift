@@ -23,8 +23,8 @@ final class DDayListViewController: UIViewController {
     private let viewModel: DDayListViewModel
     
     private lazy var itemCollectionView: UICollectionView = {
-        let collectionLayout = UICollectionViewFlowLayout()
-        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: collectionLayout)
+        let compositionalLayout = setupSquareCellListLayout()
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: compositionalLayout)
         collectionView.register(
             DDaySquareItemCell.self,
             forCellWithReuseIdentifier: DDaySquareItemCell.identifier
@@ -78,6 +78,30 @@ final class DDayListViewController: UIViewController {
 
 // MARK: - Functions
 extension DDayListViewController {
+    private func setupSquareCellListLayout() -> UICollectionViewLayout {
+        let itemSize = NSCollectionLayoutSize(
+            widthDimension: .fractionalWidth(0.5),
+            heightDimension: .fractionalHeight(1.0)
+        )
+        
+        let item = NSCollectionLayoutItem(layoutSize: itemSize)
+        item.contentInsets = NSDirectionalEdgeInsets(top: 8, leading: 8, bottom: 8, trailing: 8)
+        
+        let groupSize = NSCollectionLayoutSize(
+            widthDimension: .fractionalWidth(1.0),
+            heightDimension: .fractionalWidth(0.5)
+        )
+        
+        let group = NSCollectionLayoutGroup.horizontal(
+            layoutSize: groupSize,
+            subitems: [item]
+        )
+      
+        let section = NSCollectionLayoutSection(group: group)
+        let layout = UICollectionViewCompositionalLayout(section: section)
+        
+        return layout
+    }
     
     private func setupLayout() {
         view.backgroundColor = .systemBackground
@@ -94,7 +118,7 @@ extension DDayListViewController {
         itemCollectionView.snp.makeConstraints {
             $0.top.equalTo(listSettingView.snp.bottom)
             $0.bottom.equalTo(view.safeAreaLayoutGuide)
-            $0.directionalHorizontalEdges.equalToSuperview().inset(10)
+            $0.directionalHorizontalEdges.equalToSuperview().inset(8)
         }
     }
     
@@ -193,47 +217,5 @@ extension DDayListViewController {
         
         
         present(alertController, animated: true)
-    }
-}
-
-// MARK: - UITableView Extension
-//extension DDayListViewController: UITableViewDelegate {
-//    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-//        return UIScreen.main.bounds.height / 10
-//    }
-//
-//    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-//        return 30
-//    }
-//
-//    func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
-//        return plusbutton
-//    }
-//
-//    func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle {
-//        return .delete
-//    }
-//
-//    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-//
-//        if editingStyle == .delete {
-//            tableView.beginUpdates()
-//            viewModel.removeDDayItem(row: indexPath.row)
-//            tableView.deleteRows(at: [indexPath], with: .automatic)
-//            tableView.endUpdates()
-//
-//
-//        }
-//    }
-//}
-
-extension DDayListViewController: UICollectionViewDelegateFlowLayout {
-    func collectionView(
-        _ collectionView: UICollectionView,
-        layout collectionViewLayout: UICollectionViewLayout,
-        sizeForItemAt indexPath: IndexPath
-    ) -> CGSize {
-        
-        return CGSize(width: 300, height: 300)
     }
 }
