@@ -19,21 +19,8 @@ final class DDayListViewController: UIViewController {
     private let tapFilterButton = PassthroughSubject<String, Never>()
     private let tapMoreButton = PassthroughSubject<String, Never>()
     
-    
-    private var ddayDataSource: UITableViewDiffableDataSource<Section, DDay>!
+    private var ddayDataSource: UICollectionViewDiffableDataSource<Section, DDay>!
     private let viewModel: DDayListViewModel
-
-//    private lazy var itemTableView: UITableView = {
-//        let tableView = UITableView(frame: .zero)
-//        tableView.separatorStyle = .none
-//        tableView.register(
-//            DDayListItemTableViewCell.self,
-//            forCellReuseIdentifier: DDayListItemTableViewCell.identifier
-//        )
-//        tableView.tableFooterView = plusbutton
-//        tableView.delegate = self
-//        return tableView
-//    }()
     
     private lazy var itemCollectionView: UICollectionView = {
         let collectionLayout = UICollectionViewFlowLayout()
@@ -42,7 +29,6 @@ final class DDayListViewController: UIViewController {
             DDaySquareItemCell.self,
             forCellWithReuseIdentifier: DDaySquareItemCell.identifier
         )
-        collectionView.dataSource = self
         return collectionView
     }()
     
@@ -76,8 +62,8 @@ final class DDayListViewController: UIViewController {
         feedbackGenerator.prepare()    // 준비상태
         
         setupLayout()
-//        setupTableViewDataSource()
-//        configureSnapshot()
+        setupCollectionViewDataSource()
+        setupSnapshot()
 
         bind()
     }
@@ -85,8 +71,8 @@ final class DDayListViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        configureFilterButton()
-        configureMoreButton()
+        setupFilterButton()
+        setupMoreButton()
     }
 }
 
@@ -112,34 +98,34 @@ extension DDayListViewController {
         }
     }
     
-//    private func setupTableViewDataSource() {
-//        ddayDataSource = UITableViewDiffableDataSource<Section, DDay> (
-//            tableView: itemTableView,
-//            cellProvider: { (tableView, indexPath, itemIdentifier) -> UITableViewCell? in
-//
-//                guard let cell = tableView.dequeueReusableCell(
-//                    withIdentifier: DDayListItemTableViewCell.identifier,
-//                    for: indexPath
-//                ) as? DDayListItemTableViewCell else { return nil }
-//
-//                cell.selectionStyle = .none
-//                cell.setupView(data: self.viewModel.getDDayItem(row: indexPath.row))
-//
-//                return cell
-//        })
-//    }
+    private func setupCollectionViewDataSource() {
+        ddayDataSource = UICollectionViewDiffableDataSource<Section, DDay> (
+            collectionView: itemCollectionView,
+            cellProvider: { (collectionView, indexPath, itemIdentifier) -> UICollectionViewCell? in
+                
+                guard let cell = collectionView.dequeueReusableCell(
+                    withReuseIdentifier: DDaySquareItemCell.identifier,
+                    for: indexPath
+                ) as? DDaySquareItemCell else { return nil }
+                
+                cell.setupView(dday: self.viewModel.getDDayItem(row: indexPath.row))
+                
+                return cell
+            }
+        )
+    }
     
-//    private func configureSnapshot() {
-//        viewModel.fetchDDayList()
-//
-//        var snapShot = NSDiffableDataSourceSnapshot<Section, DDay>()
-//        snapShot.appendSections([.main])
-//        snapShot.appendItems(viewModel.getDDayList())
-//        ddayDataSource.apply(snapShot)
-//    }
+    private func setupSnapshot() {
+        viewModel.fetchDDayList()
+
+        var snapShot = NSDiffableDataSourceSnapshot<Section, DDay>()
+        snapShot.appendSections([.main])
+        snapShot.appendItems(viewModel.getDDayList())
+        ddayDataSource.apply(snapShot)
+    }
     
     /// ListSettingView - FilterButton 설정 메서드
-    private func configureFilterButton() {
+    private func setupFilterButton() {
         let filterAction = UIAction { _ in
             self.showActionSheet(type: .filter)
         }
@@ -147,7 +133,7 @@ extension DDayListViewController {
     }
     
     /// ListSettingView - MoreButton 설정 메서드
-    private func configureMoreButton() {
+    private func setupMoreButton() {
         let moreAction = UIAction { _ in
             self.showActionSheet(type: .more)
         }
@@ -181,7 +167,7 @@ extension DDayListViewController {
         let addItemVC = AddItemViewController()
         addItemVC.addItemHandler = { [weak self] item in
             self?.viewModel.addDDayItem(item: item)
-//            self?.configureSnapshot()
+            self?.setupSnapshot()
         }
         present(addItemVC, animated: true)
     }
@@ -248,32 +234,6 @@ extension DDayListViewController: UICollectionViewDelegateFlowLayout {
         sizeForItemAt indexPath: IndexPath
     ) -> CGSize {
         
-        return CGSize(width: 100, height: 100)
+        return CGSize(width: 300, height: 300)
     }
-}
-
-extension DDayListViewController: UICollectionViewDataSource {
-    func collectionView(
-        _ collectionView: UICollectionView,
-        numberOfItemsInSection section: Int
-    ) -> Int {
-        
-        return 5
-    }
-    
-    func collectionView(
-        _ collectionView: UICollectionView,
-        cellForItemAt indexPath: IndexPath
-    ) -> UICollectionViewCell {
-        
-        guard let cell = collectionView.dequeueReusableCell(
-            withReuseIdentifier: DDaySquareItemCell.identifier,
-            for: indexPath
-        ) as? DDaySquareItemCell else { return UICollectionViewCell() }
-        
-        cell.backgroundColor = .systemGray
-        return cell
-    }
-    
-    
 }
