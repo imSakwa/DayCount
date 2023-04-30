@@ -12,14 +12,36 @@ import SnapKit
 
 final class ListSettingView: UIView {
     
+    private let leftStackView: UIStackView = {
+        let stackView = UIStackView(frame: .zero)
+        stackView.axis = .horizontal
+        stackView.spacing = 8
+        return stackView
+    }()
+    
+    private let rightStackView: UIStackView = {
+        let stackView = UIStackView(frame: .zero)
+        stackView.axis = .horizontal
+        stackView.spacing = 8
+        return stackView
+    }()
+    
     private(set) var filterButton: UIButton = {
         let button =  UIButton(type: .custom)
         let imageConig = UIImage.SymbolConfiguration(pointSize: 24)
         let image = UIImage(systemName: "line.3.horizontal.decrease.circle",
                             withConfiguration: imageConig)
         button.setImage(image, for: .normal)
-        button.imageView?.contentMode = .scaleToFill
       
+        return button
+    }()
+    
+    private(set) var plusButton: UIButton = {
+        let button = UIButton(frame: .zero)
+        let imageConig = UIImage.SymbolConfiguration(pointSize: 24)
+        let image = UIImage(systemName: "plus.circle",
+                            withConfiguration: imageConig)
+        button.setImage(image, for: .normal)
         return button
     }()
     
@@ -35,7 +57,7 @@ final class ListSettingView: UIView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         
-        setupView()
+        setupLayout()
     }
     
     required init?(coder: NSCoder) {
@@ -44,19 +66,34 @@ final class ListSettingView: UIView {
 }
 
 extension ListSettingView {
-    private func setupView() {
-        [filterButton, moreButton]
+    private func setupLayout() {
+        [leftStackView, rightStackView]
             .forEach { addSubview($0) }
         
+        [filterButton]
+            .forEach { leftStackView.addArrangedSubview($0) }
+        [plusButton, moreButton]
+            .forEach { rightStackView.addArrangedSubview($0) }
+        
+        leftStackView.snp.makeConstraints {
+            $0.leading.equalToSuperview().inset(8)
+            $0.height.equalTo(24)
+        }
+        
+        rightStackView.snp.makeConstraints {
+            $0.trailing.equalToSuperview().inset(8)
+            $0.height.equalTo(24)
+        }
+        
         filterButton.snp.makeConstraints {
-            $0.trailing.equalTo(moreButton.snp.leading).offset(-8)
-            $0.centerY.equalToSuperview()
+            $0.size.equalTo(24)
+        }
+        
+        plusButton.snp.makeConstraints {
             $0.size.equalTo(24)
         }
         
         moreButton.snp.makeConstraints {
-            $0.trailing.equalToSuperview().inset(16)
-            $0.centerY.equalToSuperview()
             $0.size.equalTo(24)
         }
     }

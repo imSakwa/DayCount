@@ -31,14 +31,7 @@ final class DDayListViewController: UIViewController {
         )
         return collectionView
     }()
-    
-    private lazy var plusbutton: UIButton = {
-        let button = UIButton(frame: .zero)
-        button.setImage(UIImage.init(systemName: "plus.circle"), for: .normal)
-        button.addTarget(self, action: #selector(clickPlusButton), for: .touchUpInside)
-        return button
-    }()
-    
+         
     private let feedbackGenerator: UISelectionFeedbackGenerator = {
         return UISelectionFeedbackGenerator()
     }()
@@ -71,8 +64,7 @@ final class DDayListViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        setupFilterButton()
-        setupMoreButton()
+        setupSettingView()
     }
 }
 
@@ -148,6 +140,19 @@ extension DDayListViewController {
         ddayDataSource.apply(snapShot)
     }
     
+    private func setupSettingView() {
+        setupFilterButton()
+        setupMoreButton()
+        setupAddButton()
+    }
+    
+    private func setupAddButton() {
+        let addAction = UIAction { _ in
+            self.clickPlusButton()
+        }
+        listSettingView.plusButton.addAction(addAction, for: .touchUpInside)
+    }
+    
     /// ListSettingView - FilterButton 설정 메서드
     private func setupFilterButton() {
         let filterAction = UIAction { _ in
@@ -162,11 +167,6 @@ extension DDayListViewController {
             self.showActionSheet(type: .more)
         }
         listSettingView.moreButton.addAction(moreAction, for: .touchUpInside)
-    }
-    
-    @objc
-    private func clickPlusButton(_ sender: UIButton) {
-        tapAddButton.send()
     }
     
     // 뷰-뷰모델 바인딩
@@ -184,6 +184,10 @@ extension DDayListViewController {
                 self?.moveToAddItemVC()
             }
             .store(in: &cancellables)
+    }
+    
+    private func clickPlusButton() {
+        tapAddButton.send()
     }
     
     // plus 버튼 클릭 이벤트
