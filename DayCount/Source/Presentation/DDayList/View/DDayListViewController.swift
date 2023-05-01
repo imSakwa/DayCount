@@ -23,7 +23,7 @@ final class DDayListViewController: UIViewController {
     private let viewModel: DDayListViewModel
     
     private lazy var itemCollectionView: UICollectionView = {
-        let compositionalLayout = setupSquareCellListLayout()
+        let compositionalLayout = setupSquareCellLayout()
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: compositionalLayout)
         collectionView.register(
             DDaySquareItemCell.self,
@@ -70,7 +70,7 @@ final class DDayListViewController: UIViewController {
 
 // MARK: - Functions
 extension DDayListViewController {
-    private func setupSquareCellListLayout() -> UICollectionViewLayout {
+    private func setupSquareCellLayout() -> UICollectionViewLayout {
         let itemSize = NSCollectionLayoutSize(
             widthDimension: .fractionalWidth(0.5),
             heightDimension: .fractionalHeight(1.0)
@@ -88,7 +88,32 @@ extension DDayListViewController {
             layoutSize: groupSize,
             subitems: [item]
         )
-      
+        
+        let section = NSCollectionLayoutSection(group: group)
+        let layout = UICollectionViewCompositionalLayout(section: section)
+        
+        return layout
+    }
+    
+    private func setupListCellLayout() -> UICollectionViewLayout {
+        let itemSize = NSCollectionLayoutSize(
+            widthDimension: .fractionalWidth(1.0),
+            heightDimension: .fractionalHeight(1.0)
+        )
+        
+        let item = NSCollectionLayoutItem(layoutSize: itemSize)
+        item.contentInsets = NSDirectionalEdgeInsets(top: 8, leading: 8, bottom: 8, trailing: 8)
+        
+        let groupSize = NSCollectionLayoutSize(
+            widthDimension: .fractionalWidth(1.0),
+            heightDimension: .fractionalWidth(0.3)
+        )
+        
+        let group = NSCollectionLayoutGroup.horizontal(
+            layoutSize: groupSize,
+            subitems: [item]
+        )
+        
         let section = NSCollectionLayoutSection(group: group)
         let layout = UICollectionViewCompositionalLayout(section: section)
         
@@ -133,7 +158,7 @@ extension DDayListViewController {
     
     private func setupSnapshot() {
         viewModel.fetchDDayList()
-
+        
         var snapShot = NSDiffableDataSourceSnapshot<Section, DDay>()
         snapShot.appendSections([.main])
         snapShot.appendItems(viewModel.getDDayList())
@@ -209,7 +234,7 @@ extension DDayListViewController {
         
         for actionTitle in viewModel.getActionTitleArray(type: type) {
             let action = UIAlertAction(title: actionTitle, style: .default) { _ in
-                self.tapFilterButton.send(actionTitle)
+                self.changeCellStyle(style: DDayListCellType(rawValue: actionTitle)!)
             }
             
             alertController.addAction(action)
@@ -221,5 +246,18 @@ extension DDayListViewController {
         
         
         present(alertController, animated: true)
+    }
+    
+    /// CollectionView Cell 모양 변경 메서드
+    private func changeCellStyle(style: DDayListCellType) {
+        switch style {
+        case .list:
+            itemCollectionView.setCollectionViewLayout(setupListCellLayout(), animated: true)
+        case .square:
+            itemCollectionView.setCollectionViewLayout(setupSquareCellLayout(), animated: true)
+        }
+        
+        
+        itemCollectionView.collectionViewLayout.invalidateLayout()
     }
 }
