@@ -9,26 +9,10 @@ import Combine
 import CoreData
 import Foundation
 
-enum ActionType: String {
-    case filter = "필터"
-    case more = "더보기"
-}
-
 final class DDayListViewModel: ViewModelType {
     private var cancellables = Set<AnyCancellable>()
     private var ddayList: DDayList = []
     private let ddayUseCase: DDayUseCaseProtocol
-    
-    let moreTitleArray = [
-        "리스트",
-        "정사각형"
-    ]
-    
-    let filterTitleArray = [
-        "기념일",
-        "생일",
-        "여행계획"
-    ]
     
     init(useCase: DDayUseCaseProtocol) {
         ddayUseCase = useCase
@@ -65,7 +49,7 @@ final class DDayListViewModel: ViewModelType {
 }
 
 extension DDayListViewModel {
-    /// Model에 데이터 추가
+    
     func addDDayItem(item: DDay) {
         ddayList.append(item)
         
@@ -99,16 +83,7 @@ extension DDayListViewModel {
         return ddayList.count
     }
     
-    
-    /// 액션에 따른 타이틀 담긴 배열 반환
-    /// - Parameter type: 액션의 타입
-    /// - Returns: 액션 타이틀 배열
-    func getActionTitleArray(type: ActionType) -> [String] {
-        switch type {
-        case .filter:
-            return filterTitleArray
-        case .more:
-            return moreTitleArray
-        }
+    func getActionTitleArray(type: AlertActionType) -> [String] {
+        return type.titleArray
     }
 }

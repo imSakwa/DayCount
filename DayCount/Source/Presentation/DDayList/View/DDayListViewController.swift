@@ -22,8 +22,10 @@ final class DDayListViewController: UIViewController {
     private var ddayDataSource: UICollectionViewDiffableDataSource<Section, DDay>!
     private let viewModel: DDayListViewModel
     
+    private var currentCellType: DDayListCellType = .list
+    
     private lazy var itemCollectionView: UICollectionView = {
-        let compositionalLayout = setupSquareCellLayout()
+        let compositionalLayout = getCellType()
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: compositionalLayout)
         collectionView.register(
             DDaySquareItemCell.self,
@@ -149,7 +151,10 @@ extension DDayListViewController {
                     for: indexPath
                 ) as? DDaySquareItemCell else { return nil }
                 
-                cell.setupView(dday: self.viewModel.getDDayItem(row: indexPath.row))
+                cell.setupView(
+                    type: self.currentCellType,
+                    dday: self.viewModel.getDDayItem(row: indexPath.row)
+                )
                 
                 return cell
             }
@@ -225,7 +230,7 @@ extension DDayListViewController {
         present(addItemVC, animated: true)
     }
     
-    private func showActionSheet(type: ActionType) {
+    private func showActionSheet(type: AlertActionType) {
         let alertController = UIAlertController(
             title: type.rawValue,
             message: nil,
@@ -234,7 +239,12 @@ extension DDayListViewController {
         
         for actionTitle in viewModel.getActionTitleArray(type: type) {
             let action = UIAlertAction(title: actionTitle, style: .default) { _ in
-                self.changeCellStyle(style: DDayListCellType(rawValue: actionTitle)!)
+                switch type {
+                case .filter:
+                    self.filterCollectionView(filter: DDayType(rawValue: actionTitle)!)
+                case .more:
+                    self.changeCellStyle(style: DDayListCellType(rawValue: actionTitle)!)
+                }
             }
             
             alertController.addAction(action)
@@ -248,16 +258,24 @@ extension DDayListViewController {
         present(alertController, animated: true)
     }
     
+    private func filterCollectionView(filter: DDayType) {
+        print(filter.rawValue)
+    }
+    
     /// CollectionView Cell 모양 변경 메서드
     private func changeCellStyle(style: DDayListCellType) {
-        switch style {
-        case .list:
-            itemCollectionView.setCollectionViewLayout(setupListCellLayout(), animated: true)
-        case .square:
-            itemCollectionView.setCollectionViewLayout(setupSquareCellLayout(), animated: true)
-        }
+        currentCellType = style
         
-        
+        itemCollectionView.setCollectionViewLayout(getCellType(), animated: true)
         itemCollectionView.collectionViewLayout.invalidateLayout()
+    }
+    
+    private func getCellType() -> UICollectionViewLayout {
+        switch currentCellType {
+        case .list:
+            return setupListCellLayout()
+        case .square:
+            return setupSquareCellLayout()
+        }
     }
 }
