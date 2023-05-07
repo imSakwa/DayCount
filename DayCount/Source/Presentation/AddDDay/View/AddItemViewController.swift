@@ -8,17 +8,19 @@
 import Combine
 import UIKit
 
+import SnapKit
+
+
 final class AddItemViewController: UIViewController {
     private var titles: [String] = []
     private var dates: [String] = []
     private var switchOn: Bool = false
     private let days = [["2021","2022","2023","2024","2025","2026","2027","2028","2029","2030"],["1","2","3","4","5","6","7","8","9","10","11","12"],["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31"]]
     
-    private let viewModel = DDayListItemViewModel()
+    private let viewModel = AddDDayViewModel()
     private var cancellables = Set<AnyCancellable>()
     var addItemHandler: ((DDay) -> Void)?
     
-    private let titleValue = PassthroughSubject<String, Never>()
     private let dateValue = PassthroughSubject<String, Never>()
     private let switchValue = PassthroughSubject<Bool, Never>()
     private let doneValue = PassthroughSubject<Void, Never>()
@@ -26,7 +28,6 @@ final class AddItemViewController: UIViewController {
     
     private let titleTextField: UITextField = {
         let textField = UITextField(frame: .zero)
-        textField.translatesAutoresizingMaskIntoConstraints = false
         textField.attributedPlaceholder = NSAttributedString(
             string: "디데이 제목",
             attributes: [
@@ -42,20 +43,20 @@ final class AddItemViewController: UIViewController {
         stackView.axis = .horizontal
         stackView.distribution = .fill
         stackView.spacing = 15
-        stackView.translatesAutoresizingMaskIntoConstraints = false
         return stackView
     }()
     
-    private let dateTextField: UITextField = {
+    private lazy var dateTextField: UITextField = {
         let textField = UITextField(frame: .zero)
-        textField.translatesAutoresizingMaskIntoConstraints = false
         textField.attributedPlaceholder = NSAttributedString(
             string: "연도 / 월 / 일",
             attributes: [
                 NSAttributedString.Key.foregroundColor : #colorLiteral(red: 0.5966893435, green: 0.5931452513, blue: 0.5994156003, alpha: 1)
             ]
         )
+        textField.tintColor = .clear
         textField.textFieldConfig(view: textField)
+        textField.delegate = self
         return textField
     }()
     
@@ -70,12 +71,12 @@ final class AddItemViewController: UIViewController {
         let pickerview = UIPickerView(frame: .zero)
         pickerview.delegate = self
         pickerview.dataSource = self
+        dateTextField.inputView = pickerview
         return pickerview
     }()
     
     private lazy var upDownSwitch: UISwitch = {
         let switchBtn = UISwitch(frame: .zero)
-        switchBtn.translatesAutoresizingMaskIntoConstraints = false
         switchBtn.isOn = false
         switchBtn.addTarget(self, action: #selector(changeSwitch), for: .valueChanged)
         return switchBtn
@@ -86,9 +87,9 @@ final class AddItemViewController: UIViewController {
         button.tintColor = .white
         button.setTitle("추가하기", for: .normal)
         button.layer.cornerRadius = 10
-        button.translatesAutoresizingMaskIntoConstraints = false
         button.isEnabled = false
         button.backgroundColor = .systemGray2
+        button.addTarget(self, action: #selector(tapDoneButton), for: .touchUpInside)
         return button
     }()
     
@@ -102,21 +103,13 @@ final class AddItemViewController: UIViewController {
         setupView()
         setupLayout()
         bind()
-        
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy"
-        datePickerView.selectRow(Int(dateFormatter.string(from: Date()))!-2021, inComponent: 0, animated: false)
-        dateFormatter.dateFormat = "M"
-        datePickerView.selectRow(Int(dateFormatter.string(from: Date()))!-1, inComponent: 1, animated: false)
-        dateFormatter.dateFormat = "d"
-        datePickerView.selectRow(Int(dateFormatter.string(from: Date()))!-1, inComponent: 2, animated: false)
     }
 }
 
 extension AddItemViewController {
     private func bind() {
-        let input = DDayListItemViewModel.Input(
-            titleStr: titleValue.eraseToAnyPublisher(),
+        let input = AddDDayViewModel.Input(
+            titleStr: titleTextField.publisher.eraseToAnyPublisher(),
             dateStr: dateValue.eraseToAnyPublisher(),
             isSwitchOn: switchValue.eraseToAnyPublisher(),
             tapDone: doneValue.eraseToAnyPublisher()
@@ -131,15 +124,14 @@ extension AddItemViewController {
             }
             .store(in: &cancellables)
 
-        
-        output.tapDoneButton
+        output.ddayItem
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] (value1, value2, value3, value4) in
-                let newItem = DDay(title: value2, date: value3, isSwitchOn: value4)
-                self?.addItemHandler?(newItem)
+            .sink { [weak self] dday in
+                self?.addItemHandler?(dday)
                 self?.dismiss(animated: true)
             }
             .store(in: &cancellables)
+
     }
     
     // 오늘부터 switch on/off 동작 함수
@@ -161,37 +153,55 @@ extension AddItemViewController {
         dateTextField.sendActions(for: .valueChanged)
         switchOn = !switchOn
         dateTextField.isEnabled = !dateTextField.isEnabled
+        dateValue.send(dateTextField.text ?? "")
+    }
+    
+    @objc
+    private func tapDoneButton(_ sender: UIButton) {
+        doneValue.send()
     }
     
     private func setupView() {
-        view.backgroundColor = .white
-        dateTextField.inputView = datePickerView
+        view.backgroundColor = .systemBackground
+        
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy"
+        datePickerView.selectRow(Int(dateFormatter.string(from: Date()))!-2021,
+                                 inComponent: 0,
+                                 animated: false)
+        
+        dateFormatter.dateFormat = "M"
+        datePickerView.selectRow(Int(dateFormatter.string(from: Date()))!-1,
+                                 inComponent: 1,
+                                 animated: false)
+        
+        dateFormatter.dateFormat = "d"
+        datePickerView.selectRow(Int(dateFormatter.string(from: Date()))!-1,
+                                 inComponent: 2,
+                                 animated: false)
     }
     
     private func setupLayout() {
         [titleTextField, dateStackView, doneBtn].forEach { view.addSubview($0) }
         [dateTextField, textLabel, upDownSwitch].forEach { dateStackView.addArrangedSubview($0) }
         
-        NSLayoutConstraint.activate([
-            titleTextField.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            titleTextField.topAnchor.constraint(equalTo: view.topAnchor, constant: 225),
-            titleTextField.widthAnchor.constraint(equalToConstant: view.bounds.width / 1.2),
-            titleTextField.heightAnchor.constraint(equalToConstant: view.bounds.height / 24),
-        ])
+        titleTextField.snp.makeConstraints {
+            $0.centerX.equalToSuperview()
+            $0.top.equalTo(view.safeAreaLayoutGuide).offset(200)
+            $0.width.equalToSuperview().dividedBy(1.2)
+            $0.height.equalToSuperview().dividedBy(24)
+        }
         
-        NSLayoutConstraint.activate([
-            dateStackView.topAnchor.constraint(equalTo: titleTextField.bottomAnchor, constant: 45),
-            dateStackView.leftAnchor.constraint(equalTo: titleTextField.leftAnchor),
-            dateStackView.rightAnchor.constraint(equalTo: titleTextField.rightAnchor),
-            dateStackView.widthAnchor.constraint(equalTo: titleTextField.widthAnchor),
-            dateStackView.heightAnchor.constraint(equalToConstant: view.bounds.height / 24)
-        ])
+        dateStackView.snp.makeConstraints {
+            $0.top.equalTo(titleTextField.snp.bottom).offset(45)
+            $0.directionalHorizontalEdges.size.equalTo(titleTextField)
+        }
         
-        NSLayoutConstraint.activate([
-            doneBtn.topAnchor.constraint(equalTo: dateStackView.bottomAnchor, constant: 100),
-            doneBtn.widthAnchor.constraint(equalToConstant: 150),
-            doneBtn.centerXAnchor.constraint(equalTo: view.centerXAnchor)
-        ])
+        doneBtn.snp.makeConstraints {
+            $0.top.equalTo(dateStackView.snp.bottom).offset(100)
+            $0.width.equalTo(150)
+            $0.centerX.equalToSuperview()
+        }
     }
 }
 
@@ -242,6 +252,16 @@ extension AddItemViewController: UIPickerViewDataSource, UIPickerViewDelegate {
         }
         
         dateTextField.text = year+"년 "+month+"월 "+day+"일"
+        dateValue.send(dateTextField.text ?? "")
     }
     
+}
+
+extension AddItemViewController: UITextFieldDelegate {
+    func textField(_ textField: UITextField,
+                   shouldChangeCharactersIn range: NSRange,
+                   replacementString string: String) -> Bool {
+        
+        return (textField == dateTextField) == false
+    }
 }
