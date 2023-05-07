@@ -28,8 +28,8 @@ final class DDayListViewController: UIViewController {
         let compositionalLayout = getCellType()
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: compositionalLayout)
         collectionView.register(
-            DDaySquareItemCell.self,
-            forCellWithReuseIdentifier: DDaySquareItemCell.identifier
+            DDayCell.self,
+            forCellWithReuseIdentifier: DDayCell.identifier
         )
         return collectionView
     }()
@@ -147,11 +147,11 @@ extension DDayListViewController {
             cellProvider: { (collectionView, indexPath, itemIdentifier) -> UICollectionViewCell? in
                 
                 guard let cell = collectionView.dequeueReusableCell(
-                    withReuseIdentifier: DDaySquareItemCell.identifier,
+                    withReuseIdentifier: DDayCell.identifier,
                     for: indexPath
-                ) as? DDaySquareItemCell else { return nil }
+                ) as? DDayCell else { return nil }
                 
-                cell.setupView(
+                cell.setupContentView(
                     type: self.currentCellType,
                     dday: self.viewModel.getDDayItem(row: indexPath.row)
                 )
