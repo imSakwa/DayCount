@@ -12,6 +12,8 @@ import SnapKit
 
 
 final class AddItemViewController: UIViewController {
+    // MARK: Properties
+    
     private var titles: [String] = []
     private var dates: [String] = []
     private var switchOn: Bool = false
@@ -97,6 +99,8 @@ final class AddItemViewController: UIViewController {
         view.endEditing(true)
     }
     
+    // MARK: View LifeCycle
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -105,6 +109,8 @@ final class AddItemViewController: UIViewController {
         bind()
     }
 }
+
+// MARK: - Methods
 
 extension AddItemViewController {
     private func bind() {
@@ -134,7 +140,6 @@ extension AddItemViewController {
 
     }
     
-    // 오늘부터 switch on/off 동작 함수
     @objc
     private func changeSwitch(_ sender: UISwitch) {
         switchValue.send(upDownSwitch.isOn)
@@ -205,30 +210,37 @@ extension AddItemViewController {
     }
 }
 
+// MARK: - UIPickerView DataSource
 
-
-extension AddItemViewController: UIPickerViewDataSource, UIPickerViewDelegate {
+extension AddItemViewController: UIPickerViewDataSource {
     
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
         return days.count
     }
     
-    func pickerView(_ pickerView: UIPickerView,
-                    numberOfRowsInComponent component: Int) -> Int {
+    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
         
         return days[component].count
     }
-    
-    func pickerView(_ pickerView: UIPickerView,
-                    titleForRow row: Int,
-                    forComponent component: Int) -> String? {
+}
+
+// MARK: - UIPickerView Delegate
+
+extension AddItemViewController: UIPickerViewDelegate {
+    func pickerView(
+        _ pickerView: UIPickerView,
+        titleForRow row: Int,
+        forComponent component: Int
+    ) -> String? {
         
         return days[component][row]
     }
     
-    func pickerView(_ pickerView: UIPickerView,
-                    didSelectRow row: Int,
-                    inComponent component: Int) {
+    func pickerView(
+        _ pickerView: UIPickerView,
+        didSelectRow row: Int,
+        inComponent component: Int
+    ) {
         
         var year: String = ""
         var month: String = ""
@@ -254,13 +266,16 @@ extension AddItemViewController: UIPickerViewDataSource, UIPickerViewDelegate {
         dateTextField.text = year+"년 "+month+"월 "+day+"일"
         dateValue.send(dateTextField.text ?? "")
     }
-    
 }
 
+// MARK: - UITextField Delegate
+
 extension AddItemViewController: UITextFieldDelegate {
-    func textField(_ textField: UITextField,
-                   shouldChangeCharactersIn range: NSRange,
-                   replacementString string: String) -> Bool {
+    func textField(
+        _ textField: UITextField,
+        shouldChangeCharactersIn range: NSRange,
+        replacementString string: String
+    ) -> Bool {
         
         return (textField == dateTextField) == false
     }

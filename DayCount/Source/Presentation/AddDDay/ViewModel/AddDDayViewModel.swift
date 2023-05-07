@@ -9,6 +9,13 @@ import Combine
 import Foundation
 
 final class AddDDayViewModel: ViewModelType {
+    // MARK: Properties
+    
+    private var cancellables = Set<AnyCancellable>()
+    private let ddayList: [DDay] = [DDay]()
+    
+    // MARK: Input & Output
+    
     struct Input {
         let titleStr: AnyPublisher<String, Never>
         let dateStr: AnyPublisher<String, Never>
@@ -20,10 +27,11 @@ final class AddDDayViewModel: ViewModelType {
         let enableSaveButton: AnyPublisher<Bool, Never>
         let ddayItem: AnyPublisher<DDay, Never>
     }
-    
-    private var cancellables = Set<AnyCancellable>()
-    private let ddayList: [DDay] = [DDay]()
-    
+}
+
+// MARK: - Methods
+
+extension AddDDayViewModel {
     func transform(input: Input) -> Output {
         let titleSubject = CurrentValueSubject<String, Never>("")
         let dateSubject = CurrentValueSubject<String, Never>("")

@@ -10,13 +10,20 @@ import CoreData
 import Foundation
 
 final class DDayListViewModel: ViewModelType {
+    
+    // MARK: Properties
+    
     private var cancellables = Set<AnyCancellable>()
     private var ddayList: DDayList = []
     private let ddayUseCase: DDayUseCaseProtocol
     
+    // MARK: Initializers
+    
     init(useCase: DDayUseCaseProtocol) {
         ddayUseCase = useCase
     }
+    
+    // MARK: Input & Output
     
     struct Input {
         let tapAddButton: AnyPublisher<Void, Never>
@@ -27,6 +34,11 @@ final class DDayListViewModel: ViewModelType {
     struct Output {
         let buttonTap: AnyPublisher<Void, Never>
     }
+}
+
+// MARK: - Methods
+
+extension DDayListViewModel {
     
     func transform(input: Input) -> Output {
         let buttonTap = input.tapAddButton
@@ -46,9 +58,6 @@ final class DDayListViewModel: ViewModelType {
         
         return Output(buttonTap: buttonTap)
     }
-}
-
-extension DDayListViewModel {
     
     func addDDayItem(item: DDay) {
         ddayList.append(item)

@@ -12,6 +12,8 @@ import SnapKit
 
 final class ListSettingView: UIView {
     
+    // MARK: Properties
+    
     private let leftStackView: UIStackView = {
         let stackView = UIStackView(frame: .zero)
         stackView.axis = .horizontal
@@ -54,6 +56,8 @@ final class ListSettingView: UIView {
         return button
     }()
     
+    // MARK: Initializers
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         
@@ -64,6 +68,8 @@ final class ListSettingView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
 }
+
+// MARK: - Methods
 
 extension ListSettingView {
     private func setupLayout() {

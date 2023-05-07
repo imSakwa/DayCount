@@ -14,6 +14,8 @@ import SnapKit
 
 final class DDayListViewController: UIViewController {
    
+    // MARK: Properties
+    
     private var cancellables = Set<AnyCancellable>()
     private let tapAddButton = PassthroughSubject<Void, Never>()
     private let tapFilterButton = PassthroughSubject<String, Never>()
@@ -42,6 +44,8 @@ final class DDayListViewController: UIViewController {
         return ListSettingView(frame: .zero)
     }()
     
+    // MARK: Initializers
+    
     init(viewModel: DDayListViewModel) {
         self.viewModel = viewModel
         
@@ -52,9 +56,11 @@ final class DDayListViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
+    // MARK: View LifeCycle
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        feedbackGenerator.prepare()    // 준비상태
+        feedbackGenerator.prepare()
         
         setupLayout()
         setupCollectionViewDataSource()
@@ -70,7 +76,8 @@ final class DDayListViewController: UIViewController {
     }
 }
 
-// MARK: - Functions
+// MARK: - Methods
+
 extension DDayListViewController {
     private func setupSquareCellLayout() -> UICollectionViewLayout {
         let itemSize = NSCollectionLayoutSize(
@@ -183,7 +190,6 @@ extension DDayListViewController {
         listSettingView.plusButton.addAction(addAction, for: .touchUpInside)
     }
     
-    /// ListSettingView - FilterButton 설정 메서드
     private func setupFilterButton() {
         let filterAction = UIAction { _ in
             self.showActionSheet(type: .filter)
@@ -191,7 +197,6 @@ extension DDayListViewController {
         listSettingView.filterButton.addAction(filterAction, for: .touchUpInside)
     }
     
-    /// ListSettingView - MoreButton 설정 메서드
     private func setupMoreButton() {
         let moreAction = UIAction { _ in
             self.showActionSheet(type: .more)
@@ -199,7 +204,6 @@ extension DDayListViewController {
         listSettingView.moreButton.addAction(moreAction, for: .touchUpInside)
     }
     
-    // 뷰-뷰모델 바인딩
     private func bind(){
         let input = DDayListViewModel.Input(
             tapAddButton: tapAddButton.eraseToAnyPublisher(),
@@ -220,7 +224,6 @@ extension DDayListViewController {
         tapAddButton.send()
     }
     
-    // plus 버튼 클릭 이벤트
     private func moveToAddItemVC() {
         let addItemVC = AddItemViewController()
         addItemVC.addItemHandler = { [weak self] item in
@@ -262,7 +265,6 @@ extension DDayListViewController {
         print(filter.rawValue)
     }
     
-    /// CollectionView Cell 모양 변경 메서드
     private func changeCellStyle(style: DDayListCellType) {
         currentCellType = style
         
