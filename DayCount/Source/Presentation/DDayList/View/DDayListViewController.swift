@@ -268,6 +268,10 @@ extension DDayListViewController {
         
         itemCollectionView.setCollectionViewLayout(getCellType(), animated: true)
         itemCollectionView.collectionViewLayout.invalidateLayout()
+        
+        var snapShot = ddayDataSource.snapshot()
+        snapShot.reloadSections([.main])
+        ddayDataSource.apply(snapShot)
     }
     
     private func getCellType() -> UICollectionViewLayout {
