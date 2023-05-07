@@ -45,6 +45,7 @@ final class DDayCell: UICollectionViewCell {
 }
 
 // MARK: - Methods
+
 extension DDayCell {
     
     private func initView() {
