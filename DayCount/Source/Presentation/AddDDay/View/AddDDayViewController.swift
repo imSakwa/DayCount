@@ -11,7 +11,7 @@ import UIKit
 import SnapKit
 
 
-final class AddItemViewController: UIViewController {
+final class AddDDayViewController: UIViewController {
     // MARK: Properties
     
     private var titles: [String] = []
@@ -112,7 +112,7 @@ final class AddItemViewController: UIViewController {
 
 // MARK: - Methods
 
-extension AddItemViewController {
+extension AddDDayViewController {
     private func bind() {
         let input = AddDDayViewModel.Input(
             titleStr: titleTextField.publisher.eraseToAnyPublisher(),
@@ -212,7 +212,7 @@ extension AddItemViewController {
 
 // MARK: - UIPickerView DataSource
 
-extension AddItemViewController: UIPickerViewDataSource {
+extension AddDDayViewController: UIPickerViewDataSource {
     
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
         return days.count
@@ -226,7 +226,7 @@ extension AddItemViewController: UIPickerViewDataSource {
 
 // MARK: - UIPickerView Delegate
 
-extension AddItemViewController: UIPickerViewDelegate {
+extension AddDDayViewController: UIPickerViewDelegate {
     func pickerView(
         _ pickerView: UIPickerView,
         titleForRow row: Int,
@@ -270,7 +270,7 @@ extension AddItemViewController: UIPickerViewDelegate {
 
 // MARK: - UITextField Delegate
 
-extension AddItemViewController: UITextFieldDelegate {
+extension AddDDayViewController: UITextFieldDelegate {
     func textField(
         _ textField: UITextField,
         shouldChangeCharactersIn range: NSRange,

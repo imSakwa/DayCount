@@ -225,7 +225,7 @@ extension DDayListViewController {
     }
     
     private func moveToAddItemVC() {
-        let addItemVC = AddItemViewController()
+        let addItemVC = AddDDayViewController()
         addItemVC.addItemHandler = { [weak self] item in
             self?.viewModel.addDDayItem(item: item)
             self?.setupSnapshot()
