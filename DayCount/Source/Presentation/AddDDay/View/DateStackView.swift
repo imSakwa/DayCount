@@ -13,6 +13,7 @@ final class DateStackView: UIStackView {
     
     // MARK: Properties
     
+    private weak var upDownSwitchDelegate: UpDownSwitchDelegate?
     
     private let dateTextField: UITextField = {
         let textField = UITextField(frame: .zero)
@@ -79,6 +80,25 @@ final class DateStackView: UIStackView {
         dateTextField.inputView = datePicker
     }
     
+    private func setupUpDownSwitch() {
+        upDownSwitch.addTarget(self, action: #selector(changeUpDownSwitch), for: .valueChanged)
+    }
+    
+    @objc private func changeUpDownSwitch(_ sender: UISwitch) {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy년 M월 d일"
+        let currentDateString: String = dateFormatter.string(from: Date())
+            
+        dateTextField.text = sender.isOn ?  currentDateString : ""
+        
+        dateTextField.sendActions(for: .valueChanged)
+        dateTextField.isEnabled = !dateTextField.isEnabled
+        
+        upDownSwitchDelegate?.changeUpDownSwitch(
+            isSwitchOn: sender.isOn,
+            dateString: dateTextField.text ?? ""
+        )
+    }
     
     func setupTextFieldDelegate(_ delegate: UITextFieldDelegate) {
         dateTextField.delegate = delegate
