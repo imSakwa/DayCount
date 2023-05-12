@@ -14,6 +14,7 @@ final class DateStackView: UIStackView {
     // MARK: Properties
     
     private weak var upDownSwitchDelegate: UpDownSwitchDelegate?
+    private weak var datePickerDelegate: DatePickerDelegate?
     
     private let dateTextField: UITextField = {
         let textField = UITextField(frame: .zero)
@@ -104,6 +105,19 @@ final class DateStackView: UIStackView {
         dateTextField.delegate = delegate
     }
         
+    private func setupDatePicker() {
+        datePicker.addTarget(self, action: #selector(datePickerValueChanged), for: .valueChanged)
+    }
+    
+    @objc private func datePickerValueChanged(_ sender: UIDatePicker) {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy년 M월 d일"
+        
+        let formattedDate = formatter.string(from: sender.date)
+        
+        dateTextField.text = formattedDate
+        datePickerDelegate?.datePickerValueChanged(dateString: formattedDate)
+    }
     
 }
 
