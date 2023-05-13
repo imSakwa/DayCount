@@ -87,7 +87,7 @@ final class DateStackView: UIStackView {
     
     @objc private func changeUpDownSwitch(_ sender: UISwitch) {
         let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy년 M월 d일"
+        dateFormatter.dateFormat = Design.dateFormatYearMonthDay
         let currentDateString: String = dateFormatter.string(from: Date())
             
         dateTextField.text = sender.isOn ?  currentDateString : ""
@@ -111,7 +111,7 @@ final class DateStackView: UIStackView {
     
     @objc private func datePickerValueChanged(_ sender: UIDatePicker) {
         let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy년 M월 d일"
+        formatter.dateFormat = Design.dateFormatYearMonthDay
         
         let formattedDate = formatter.string(from: sender.date)
         
@@ -124,4 +124,5 @@ final class DateStackView: UIStackView {
 private enum Design {
     static let dateTextFieldPlaceholder = "연도 / 월 / 일"
     static let upDownSwitchLabelText = "오늘기준"
+    static let dateFormatYearMonthDay = "yyyy년 M월 d일"
 }
