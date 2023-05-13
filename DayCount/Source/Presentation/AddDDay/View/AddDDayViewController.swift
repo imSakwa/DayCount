@@ -46,14 +46,13 @@ final class AddDDayViewController: UIViewController {
         return stackView
     }()
     
-    private lazy var doneBtn: UIButton = {
+    private lazy var addButton: UIButton = {
         let button = UIButton(type: .custom)
         button.tintColor = .white
         button.setTitle(Design.addButtonTitle, for: .normal)
         button.layer.cornerRadius = 10
         button.isEnabled = false
         button.backgroundColor = .systemGray2
-        button.addTarget(self, action: #selector(tapDoneButton), for: .touchUpInside)
         button.addTarget(self, action: #selector(addButtonTouched), for: .touchUpInside)
         return button
     }()
@@ -94,8 +93,8 @@ extension AddDDayViewController {
         output.enableSaveButton
             .receive(on: DispatchQueue.main)
             .sink { [weak self] value in
-                self?.doneBtn.isEnabled = value
-                self?.doneBtn.backgroundColor = value ? .systemBlue : .systemGray2
+                self?.addButton.isEnabled = value
+                self?.addButton.backgroundColor = value ? .systemBlue : .systemGray2
             }
             .store(in: &cancellables)
 
@@ -109,7 +108,7 @@ extension AddDDayViewController {
 
     }
  
-    @objc private func tapDoneButton(_ sender: UIButton) {
+    @objc private func addButtonTouched(_ sender: UIButton) {
         doneValue.send()
     }
     
@@ -118,7 +117,7 @@ extension AddDDayViewController {
     }
     
     private func setupLayout() {
-        [titleTextField, dateStackView, doneBtn].forEach { view.addSubview($0) }
+        [titleTextField, dateStackView, addButton].forEach { view.addSubview($0) }
         
         titleTextField.snp.makeConstraints {
             $0.centerX.equalToSuperview()
@@ -132,7 +131,7 @@ extension AddDDayViewController {
             $0.directionalHorizontalEdges.size.equalTo(titleTextField)
         }
         
-        doneBtn.snp.makeConstraints {
+        addButton.snp.makeConstraints {
             $0.top.equalTo(dateStackView.snp.bottom).offset(100)
             $0.width.equalTo(150)
             $0.centerX.equalToSuperview()
