@@ -29,7 +29,7 @@ final class AddDDayViewController: UIViewController {
     private let titleTextField: UITextField = {
         let textField = UITextField(frame: .zero)
         textField.attributedPlaceholder = NSAttributedString(
-            string: "디데이 제목",
+            string: Design.titleTextFieldPlaceholder,
             attributes: [
                 NSAttributedString.Key.foregroundColor : #colorLiteral(red: 0.5960784314, green: 0.5921568627, blue: 0.6, alpha: 1)
             ]
@@ -49,11 +49,12 @@ final class AddDDayViewController: UIViewController {
     private lazy var doneBtn: UIButton = {
         let button = UIButton(type: .custom)
         button.tintColor = .white
-        button.setTitle("추가하기", for: .normal)
+        button.setTitle(Design.addButtonTitle, for: .normal)
         button.layer.cornerRadius = 10
         button.isEnabled = false
         button.backgroundColor = .systemGray2
         button.addTarget(self, action: #selector(tapDoneButton), for: .touchUpInside)
+        button.addTarget(self, action: #selector(addButtonTouched), for: .touchUpInside)
         return button
     }()
     
@@ -167,4 +168,9 @@ extension AddDDayViewController: UITextFieldDelegate {
 //
 //        return (textField == dateTextField) == false
 //    }
+}
+
+private enum Design {
+    static let titleTextFieldPlaceholder = "디데이 제목"
+    static let addButtonTitle = "추가하기"
 }
