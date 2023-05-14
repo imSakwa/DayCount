@@ -79,6 +79,8 @@ extension AddDDayViewController {
     
     private func setupDateStackView() {
         dateStackView.setupTextFieldDelegate(self)
+        dateStackView.setupUpDownSwitchDelegate(self)
+        dateStackView.setupDatePickerDelegate(self)
     }
     
     private func bind() {
