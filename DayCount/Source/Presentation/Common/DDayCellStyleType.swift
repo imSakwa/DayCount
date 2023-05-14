@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum DDayListCellType: String, CaseIterable {
+enum DDayCellStyleType: String, CaseIterable {
     case list = "리스트"
     case square = "정사각형"
 }

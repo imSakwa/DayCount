@@ -21,7 +21,7 @@ final class DDayListViewController: UIViewController {
     private var ddayDataSource: UICollectionViewDiffableDataSource<Section, DDay>!
     private let viewModel: DDayListViewModel
     
-    private var currentCellType: DDayListCellType = .list
+    private var currentCellType: DDayCellStyleType = .list
     
     private lazy var itemCollectionView: UICollectionView = {
         let compositionalLayout = getCellType()
