@@ -26,13 +26,9 @@ final class DDayListViewModel: ViewModelType {
     // MARK: Input & Output
     
     struct Input {
-        let tapAddButton: AnyPublisher<Void, Never>
-        let tapFilterButton: AnyPublisher<String, Never>
-        let tapMoreButton: AnyPublisher<String, Never>
     }
     
     struct Output {
-        let buttonTap: AnyPublisher<Void, Never>
     }
 }
 
@@ -41,22 +37,7 @@ final class DDayListViewModel: ViewModelType {
 extension DDayListViewModel {
     
     func transform(input: Input) -> Output {
-        let buttonTap = input.tapAddButton
-            .eraseToAnyPublisher()
-        
-        input.tapFilterButton
-            .sink { value in
-                print(value)
-            }
-            .store(in: &cancellables)
-        
-        input.tapMoreButton
-            .sink { value in
-                print(value)
-            }
-            .store(in: &cancellables)
-        
-        return Output(buttonTap: buttonTap)
+        return Output()
     }
     
     func addDDayItem(item: DDay) {
@@ -90,9 +71,5 @@ extension DDayListViewModel {
     
     func getDDayArrayCount() -> Int {
         return ddayList.count
-    }
-    
-    func getActionTitleArray(type: AlertActionType) -> [String] {
-        return type.titleArray
     }
 }
