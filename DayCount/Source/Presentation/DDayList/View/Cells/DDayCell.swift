@@ -80,7 +80,7 @@ extension DDayCell {
         }
     }
     
-    func setupContentView(type: DDayListCellType, dday: DDay) {
+    func setupContentView(type: DDayCellStyleType, dday: DDay) {
         titleLabel.text = dday.title
         
         switch type {
