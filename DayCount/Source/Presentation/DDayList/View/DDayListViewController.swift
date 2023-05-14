@@ -17,9 +17,6 @@ final class DDayListViewController: UIViewController {
     // MARK: Properties
     
     private var cancellables = Set<AnyCancellable>()
-    private let tapAddButton = PassthroughSubject<Void, Never>()
-    private let tapFilterButton = PassthroughSubject<String, Never>()
-    private let tapMoreButton = PassthroughSubject<String, Never>()
     
     private var ddayDataSource: UICollectionViewDiffableDataSource<Section, DDay>!
     private let viewModel: DDayListViewModel
@@ -62,23 +59,52 @@ final class DDayListViewController: UIViewController {
         super.viewDidLoad()
         feedbackGenerator.prepare()
         
-        setupLayout()
-        setupCollectionViewDataSource()
-        setupSnapshot()
-
-        bind()
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        
-        setupSettingView()
+        initViewController()
     }
 }
 
 // MARK: - Methods
 
 extension DDayListViewController {
+    private func initViewController() {
+        setupBaseView()
+        setupSubviews()
+        setupLayouts()
+        
+        setupListSettingView()
+        setupCollectionViewDataSource()
+        setupSnapshot()
+
+        bind()
+    }
+    
+    private func setupBaseView() {
+        view.backgroundColor = .systemBackground
+    }
+    
+    private func setupSubviews() {
+        [listSettingView, itemCollectionView]
+            .forEach { view.addSubview($0) }
+    }
+    
+    private func setupLayouts() {
+        listSettingView.snp.makeConstraints {
+            $0.top.equalTo(view.safeAreaLayoutGuide)
+            $0.directionalHorizontalEdges.equalToSuperview()
+            $0.height.equalTo(36)
+        }
+        
+        itemCollectionView.snp.makeConstraints {
+            $0.top.equalTo(listSettingView.snp.bottom)
+            $0.bottom.equalTo(view.safeAreaLayoutGuide)
+            $0.directionalHorizontalEdges.equalToSuperview().inset(8)
+        }
+    }
+    
+    private func setupListSettingView() {
+        listSettingView.setupListSettingDelegate(self)
+    }
+    
     private func setupSquareCellLayout() -> UICollectionViewLayout {
         let itemSize = NSCollectionLayoutSize(
             widthDimension: .fractionalWidth(0.5),
@@ -129,25 +155,6 @@ extension DDayListViewController {
         return layout
     }
     
-    private func setupLayout() {
-        view.backgroundColor = .systemBackground
-        
-        [listSettingView, itemCollectionView]
-            .forEach { view.addSubview($0) }
-        
-        listSettingView.snp.makeConstraints {
-            $0.top.equalTo(view.safeAreaLayoutGuide)
-            $0.directionalHorizontalEdges.equalToSuperview()
-            $0.height.equalTo(36)
-        }
-        
-        itemCollectionView.snp.makeConstraints {
-            $0.top.equalTo(listSettingView.snp.bottom)
-            $0.bottom.equalTo(view.safeAreaLayoutGuide)
-            $0.directionalHorizontalEdges.equalToSuperview().inset(8)
-        }
-    }
-    
     private func setupCollectionViewDataSource() {
         ddayDataSource = UICollectionViewDiffableDataSource<Section, DDay> (
             collectionView: itemCollectionView,
@@ -177,95 +184,13 @@ extension DDayListViewController {
         ddayDataSource.apply(snapShot)
     }
     
-    private func setupSettingView() {
-        setupFilterButton()
-        setupMoreButton()
-        setupAddButton()
-    }
-    
-    private func setupAddButton() {
-        let addAction = UIAction { _ in
-            self.clickPlusButton()
-        }
-        listSettingView.plusButton.addAction(addAction, for: .touchUpInside)
-    }
-    
-    private func setupFilterButton() {
-        let filterAction = UIAction { _ in
-            self.showActionSheet(type: .filter)
-        }
-        listSettingView.filterButton.addAction(filterAction, for: .touchUpInside)
-    }
-    
-    private func setupMoreButton() {
-        let moreAction = UIAction { _ in
-            self.showActionSheet(type: .more)
-        }
-        listSettingView.moreButton.addAction(moreAction, for: .touchUpInside)
-    }
-    
     private func bind(){
-        let input = DDayListViewModel.Input(
-            tapAddButton: tapAddButton.eraseToAnyPublisher(),
-            tapFilterButton: tapFilterButton.eraseToAnyPublisher(),
-            tapMoreButton: tapMoreButton.eraseToAnyPublisher()
-        )
+        let input = DDayListViewModel.Input()
         
         let output = viewModel.transform(input: input)
-        
-        output.buttonTap
-            .sink { [weak self] _ in
-                self?.moveToAddItemVC()
-            }
-            .store(in: &cancellables)
     }
     
-    private func clickPlusButton() {
-        tapAddButton.send()
-    }
-    
-    private func moveToAddItemVC() {
-        let addItemVC = AddDDayViewController()
-        addItemVC.addItemHandler = { [weak self] item in
-            self?.viewModel.addDDayItem(item: item)
-            self?.setupSnapshot()
-        }
-        present(addItemVC, animated: true)
-    }
-    
-    private func showActionSheet(type: AlertActionType) {
-        let alertController = UIAlertController(
-            title: type.rawValue,
-            message: nil,
-            preferredStyle: .actionSheet
-        )
-        
-        for actionTitle in viewModel.getActionTitleArray(type: type) {
-            let action = UIAlertAction(title: actionTitle, style: .default) { _ in
-                switch type {
-                case .filter:
-                    self.filterCollectionView(filter: DDayType(rawValue: actionTitle)!)
-                case .more:
-                    self.changeCellStyle(style: DDayListCellType(rawValue: actionTitle)!)
-                }
-            }
-            
-            alertController.addAction(action)
-        }
-        
-        
-        let cancel = UIAlertAction(title: "취소", style: .cancel)
-        alertController.addAction(cancel)
-        
-        
-        present(alertController, animated: true)
-    }
-    
-    private func filterCollectionView(filter: DDayType) {
-        print(filter.rawValue)
-    }
-    
-    private func changeCellStyle(style: DDayListCellType) {
+    private func changeCellStyle(style: DDayCellStyleType) {
         currentCellType = style
         
         itemCollectionView.setCollectionViewLayout(getCellType(), animated: true)
@@ -284,4 +209,44 @@ extension DDayListViewController {
             return setupSquareCellLayout()
         }
     }
+}
+
+// MARK: - AddButtonDelegate
+extension DDayListViewController: ListSettingDelegate {
+    func addButtonTap() {
+        let addItemVC = AddDDayViewController()
+        addItemVC.addItemHandler = { [weak self] item in
+            self?.viewModel.addDDayItem(item: item)
+            self?.setupSnapshot()
+        }
+        present(addItemVC, animated: true)
+    }
+    
+    func styleButtonTap() {
+        let alertController = UIAlertController(
+            title: Design.styleAlertControllerTitle,
+            message: nil,
+            preferredStyle: .actionSheet
+        )
+        
+        DDayCellStyleType.allCases.map { $0.rawValue }.forEach { style in
+            let action = UIAlertAction(title: style, style: .default) { _ in
+                self.changeCellStyle(style: DDayCellStyleType(rawValue: style)!)
+            }
+            
+            alertController.addAction(action)
+        }
+        
+        
+        let cancel = UIAlertAction(title: Design.cancelAlertActionTitle, style: .cancel)
+        alertController.addAction(cancel)
+        
+        
+        present(alertController, animated: true)
+    }
+}
+
+private enum Design {
+    static let styleAlertControllerTitle = "스타일"
+    static let cancelAlertActionTitle = "취소"
 }
