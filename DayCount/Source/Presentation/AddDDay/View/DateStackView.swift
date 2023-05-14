@@ -104,6 +104,14 @@ final class DateStackView: UIStackView {
     func setupTextFieldDelegate(_ delegate: UITextFieldDelegate) {
         dateTextField.delegate = delegate
     }
+    
+    func setupUpDownSwitchDelegate(_ delegate: UpDownSwitchDelegate) {
+        upDownSwitchDelegate = delegate
+    }
+    
+    func setupDatePickerDelegate(_ delegate: DatePickerDelegate) {
+        datePickerDelegate = delegate
+    }
         
     private func setupDatePicker() {
         datePicker.addTarget(self, action: #selector(datePickerValueChanged), for: .valueChanged)
