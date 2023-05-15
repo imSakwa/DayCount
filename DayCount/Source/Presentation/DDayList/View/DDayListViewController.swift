@@ -20,8 +20,15 @@ final class DDayListViewController: UIViewController {
     
     private var ddayDataSource: UICollectionViewDiffableDataSource<Section, DDay>!
     private let viewModel: DDayListViewModel
-    
     private var currentCellType: DDayCellStyleType = .list
+       
+    private let listSettingView: ListSettingView = {
+        return ListSettingView(frame: .zero)
+    }()
+    
+    private let tagStackView: TagStackView = {
+        return TagStackView(frame: .zero)
+    }()
     
     private lazy var itemCollectionView: UICollectionView = {
         let compositionalLayout = getCellType()
@@ -31,14 +38,6 @@ final class DDayListViewController: UIViewController {
             forCellWithReuseIdentifier: DDayCell.identifier
         )
         return collectionView
-    }()
-         
-    private let feedbackGenerator: UISelectionFeedbackGenerator = {
-        return UISelectionFeedbackGenerator()
-    }()
-    
-    private let listSettingView: ListSettingView = {
-        return ListSettingView(frame: .zero)
     }()
     
     // MARK: Initializers
@@ -57,7 +56,6 @@ final class DDayListViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        feedbackGenerator.prepare()
         
         initViewController()
     }
@@ -83,7 +81,7 @@ extension DDayListViewController {
     }
     
     private func setupSubviews() {
-        [listSettingView, itemCollectionView]
+        [tagStackView, listSettingView, itemCollectionView]
             .forEach { view.addSubview($0) }
     }
     
@@ -94,8 +92,14 @@ extension DDayListViewController {
             $0.height.equalTo(36)
         }
         
-        itemCollectionView.snp.makeConstraints {
+        tagStackView.snp.makeConstraints {
             $0.top.equalTo(listSettingView.snp.bottom)
+            $0.directionalHorizontalEdges.equalToSuperview()
+            $0.height.equalTo(48)
+        }
+        
+        itemCollectionView.snp.makeConstraints {
+            $0.top.equalTo(tagStackView.snp.bottom)
             $0.bottom.equalTo(view.safeAreaLayoutGuide)
             $0.directionalHorizontalEdges.equalToSuperview().inset(8)
         }
