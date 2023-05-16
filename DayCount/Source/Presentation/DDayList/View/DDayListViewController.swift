@@ -94,7 +94,8 @@ extension DDayListViewController {
         
         tagStackView.snp.makeConstraints {
             $0.top.equalTo(listSettingView.snp.bottom)
-            $0.directionalHorizontalEdges.equalToSuperview()
+            $0.leading.equalToSuperview()
+            $0.trailing.lessThanOrEqualToSuperview()
             $0.height.equalTo(48)
         }
         
