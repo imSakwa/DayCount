@@ -35,7 +35,8 @@ final class TagStackView: UIStackView {
     
     private func setupBaseView() {
         axis = .horizontal
-        distribution = .equalSpacing
+        distribution = .fillProportionally
         spacing = 8
+        alignment = .leading
     }
 }
