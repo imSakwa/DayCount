@@ -15,6 +15,7 @@ final class DDayListViewModel: ViewModelType {
     
     private var cancellables = Set<AnyCancellable>()
     private var ddayList: DDayList = []
+    private var tagList: TagList = []
     private let ddayUseCase: DDayUseCaseProtocol
     
     // MARK: Initializers
@@ -67,6 +68,10 @@ extension DDayListViewModel {
     
     func getDDayList() -> DDayList {
         return ddayList
+    }
+    
+    func getTagList() -> TagList {
+        return tagList
     }
     
     func getDDayArrayCount() -> Int {
