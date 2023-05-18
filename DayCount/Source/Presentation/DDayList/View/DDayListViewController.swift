@@ -106,6 +106,10 @@ extension DDayListViewController {
         }
     }
     
+    private func setupTagScrollView() {
+        tagScrollView.setupContent(with: viewModel.getTagList())
+    }
+    
     private func setupListSettingView() {
         listSettingView.setupListSettingDelegate(self)
     }

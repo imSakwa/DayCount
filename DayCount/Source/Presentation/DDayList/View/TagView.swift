@@ -15,9 +15,7 @@ final class TagView: UIView {
     // MARK: Properties
     
     private let titleLabel: UILabel = {
-        let label = UILabel(frame: .zero)
-        label.text = "테스트"
-        return label
+        return UILabel(frame: .zero)
     }()
     
     // MARK: Initializers
@@ -35,10 +33,10 @@ final class TagView: UIView {
     }
     
     // MARK: Methods
+    
     private func initView() {
         setupSubviews()
         setupLayouts()
-        setupBaseView()
     }
     
     private func setupSubviews() {
@@ -52,8 +50,7 @@ final class TagView: UIView {
         }
     }
     
-    private func setupBaseView() {
-        layer.borderColor = UIColor.black.cgColor
-        layer.borderWidth = 1.0
+    func setupContent(with tag: Tag) {
+        titleLabel.text = tag.title
     }
 }
