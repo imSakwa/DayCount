@@ -26,8 +26,8 @@ final class DDayListViewController: UIViewController {
         return ListSettingView(frame: .zero)
     }()
     
-    private let tagStackView: TagStackView = {
-        return TagStackView(frame: .zero)
+    private let tagScrollView: TagScrollView = {
+        return TagScrollView(frame: .zero)
     }()
     
     private lazy var itemCollectionView: UICollectionView = {
@@ -69,6 +69,7 @@ extension DDayListViewController {
         setupSubviews()
         setupLayouts()
         
+        setupTagScrollView()
         setupListSettingView()
         setupCollectionViewDataSource()
         setupSnapshot()
@@ -81,7 +82,7 @@ extension DDayListViewController {
     }
     
     private func setupSubviews() {
-        [tagStackView, listSettingView, itemCollectionView]
+        [tagScrollView, listSettingView, itemCollectionView]
             .forEach { view.addSubview($0) }
     }
     
@@ -92,15 +93,14 @@ extension DDayListViewController {
             $0.height.equalTo(36)
         }
         
-        tagStackView.snp.makeConstraints {
+        tagScrollView.snp.makeConstraints {
             $0.top.equalTo(listSettingView.snp.bottom)
-            $0.leading.equalToSuperview()
-            $0.trailing.lessThanOrEqualToSuperview()
+            $0.directionalHorizontalEdges.equalToSuperview()
             $0.height.equalTo(48)
         }
         
         itemCollectionView.snp.makeConstraints {
-            $0.top.equalTo(tagStackView.snp.bottom)
+            $0.top.equalTo(tagScrollView.snp.bottom)
             $0.bottom.equalTo(view.safeAreaLayoutGuide)
             $0.directionalHorizontalEdges.equalToSuperview().inset(8)
         }
