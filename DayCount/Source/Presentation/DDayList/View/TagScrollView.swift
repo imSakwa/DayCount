@@ -62,9 +62,15 @@ final class TagScrollView: UIScrollView {
     
     func setupContent(with tagList: TagList) {
         tagList.forEach {
-            let tagView = TagView()
-            tagView.setupContent(with: $0)
-            tagStackView.addArrangedSubview(tagView)
+            let tagButton = TagButton()
+            tagButton.setupContent(with: $0)
+            tagStackView.addArrangedSubview(tagButton)
+        }
+    }
+    
+    func setupTagButtonDelegate(_ delegate: TagButtonDelegate) {
+        tagStackView.subviews.forEach {
+            ($0 as? TagButton)?.setupTagButtonDelegate(delegate)
         }
     }
 }
