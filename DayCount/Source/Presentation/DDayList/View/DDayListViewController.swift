@@ -21,7 +21,9 @@ final class DDayListViewController: UIViewController {
     private var ddayDataSource: UICollectionViewDiffableDataSource<Section, DDay>!
     private let viewModel: DDayListViewModel
     private var currentCellType: DDayCellStyleType = .list
-       
+           
+    private weak var tagButtonDelegate: TagButtonDelegate?
+    
     private let listSettingView: ListSettingView = {
         return ListSettingView(frame: .zero)
     }()
@@ -108,6 +110,7 @@ extension DDayListViewController {
     
     private func setupTagScrollView() {
         tagScrollView.setupContent(with: viewModel.getTagList())
+        tagScrollView.setupTagButtonDelegate(self)
     }
     
     private func setupListSettingView() {
@@ -252,6 +255,13 @@ extension DDayListViewController: ListSettingDelegate {
         
         
         present(alertController, animated: true)
+    }
+}
+
+// MARK: - TagButtonDelegate
+extension DDayListViewController: TagButtonDelegate {
+    func tagButtonTap(tagTitle: String) {
+        print("tap \(tagTitle)")
     }
 }
 
