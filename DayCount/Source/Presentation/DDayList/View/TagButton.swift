@@ -37,6 +37,10 @@ final class TagButton: UIButton {
     }
     
     private func setupTagButton() {
+        if #available(iOS 15.0, *) {
+            configuration = .bordered()
+        }
+        
         setTitleColor(.black, for: .normal)
         addTarget(self, action: #selector(tagButtonTap), for: .touchUpInside)
     }
