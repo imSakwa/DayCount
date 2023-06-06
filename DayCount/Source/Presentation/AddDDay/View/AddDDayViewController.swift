@@ -10,7 +10,6 @@ import UIKit
 
 import SnapKit
 
-
 final class AddDDayViewController: UIViewController {
     // MARK: Properties
     
@@ -46,6 +45,11 @@ final class AddDDayViewController: UIViewController {
         return stackView
     }()
     
+    private let tagInputView: TagInputView = {
+        let view = TagInputView(frame: .zero)
+        return view
+    }()
+    
     private lazy var addButton: UIButton = {
         let button = UIButton(type: .custom)
         button.tintColor = .white
@@ -69,6 +73,7 @@ final class AddDDayViewController: UIViewController {
         setupView()
         setupLayout()
         setupDateStackView()
+        setupTagInputView()
         bind()
     }
 }
@@ -81,6 +86,11 @@ extension AddDDayViewController {
         dateStackView.setupTextFieldDelegate(self)
         dateStackView.setupUpDownSwitchDelegate(self)
         dateStackView.setupDatePickerDelegate(self)
+    }
+    
+    private func setupTagInputView() {
+        tagInputView.setupTagCollectionViewDelegateFlowLayout(self)
+        tagInputView.setupTagCollectionViewDataSource(self)
     }
     
     private func bind() {
@@ -119,7 +129,7 @@ extension AddDDayViewController {
     }
     
     private func setupLayout() {
-        [titleTextField, dateStackView, addButton].forEach { view.addSubview($0) }
+        [titleTextField, dateStackView, tagInputView, addButton].forEach { view.addSubview($0) }
         
         titleTextField.snp.makeConstraints {
             $0.centerX.equalToSuperview()
@@ -133,8 +143,14 @@ extension AddDDayViewController {
             $0.directionalHorizontalEdges.size.equalTo(titleTextField)
         }
         
+        tagInputView.snp.makeConstraints {
+            $0.top.equalTo(dateStackView.snp.bottom).offset(30)
+            $0.directionalHorizontalEdges.size.equalTo(titleTextField)
+            $0.height.equalTo(500)
+        }
+        
         addButton.snp.makeConstraints {
-            $0.top.equalTo(dateStackView.snp.bottom).offset(100)
+            $0.top.equalTo(tagInputView.snp.bottom).offset(100)
             $0.width.equalTo(150)
             $0.centerX.equalToSuperview()
         }
@@ -169,6 +185,33 @@ extension AddDDayViewController: UITextFieldDelegate {
 //
 //        return (textField == dateTextField) == false
 //    }
+}
+
+// MARK: - UICollectionViewDelegateFlowLayout
+extension AddDDayViewController: UICollectionViewDelegateFlowLayout {
+    func collectionView(
+        _ collectionView: UICollectionView,
+        layout collectionViewLayout: UICollectionViewLayout,
+        sizeForItemAt indexPath: IndexPath
+    ) -> CGSize {
+        
+        return CGSize(width: 100, height: 30)
+    }
+}
+
+extension AddDDayViewController: UICollectionViewDataSource {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return 3
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TagCollectionCell.identifier, for: indexPath) as? TagCollectionCell else {
+            return UICollectionViewCell()
+        }
+        
+        cell.titleLabel.text = "#테스트fffffffffasfasdfdasfa"
+        return cell
+    }
 }
 
 private enum Design {
