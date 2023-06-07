@@ -12,7 +12,8 @@ final class AddDDayViewModel: ViewModelType {
     // MARK: Properties
     
     private var cancellables = Set<AnyCancellable>()
-    private let ddayList: [DDay] = [DDay]()
+    private let ddayList: DDayList = DDayList()
+    var tagList: [Tag] = [Tag]()
     
     // MARK: Input & Output
     

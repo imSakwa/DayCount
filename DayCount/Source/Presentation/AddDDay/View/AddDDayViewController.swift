@@ -91,6 +91,7 @@ extension AddDDayViewController {
     private func setupTagInputView() {
         tagInputView.setupTagCollectionViewDelegateFlowLayout(self)
         tagInputView.setupTagCollectionViewDataSource(self)
+        tagInputView.setupTagTextFieldDelegate(self)
     }
     
     private func bind() {
@@ -185,6 +186,16 @@ extension AddDDayViewController: UITextFieldDelegate {
 //
 //        return (textField == dateTextField) == false
 //    }
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        
+        if viewModel.tagList.count < 3 {
+            viewModel.tagList.append(Tag(title: textField.text!))
+            tagInputView.reloadCollectionView()
+        }
+        
+        return true
+    }
 }
 
 // MARK: - UICollectionViewDelegateFlowLayout
@@ -201,7 +212,7 @@ extension AddDDayViewController: UICollectionViewDelegateFlowLayout {
 
 extension AddDDayViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 3
+        return viewModel.tagList.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -209,7 +220,7 @@ extension AddDDayViewController: UICollectionViewDataSource {
             return UICollectionViewCell()
         }
         
-        cell.titleLabel.text = "#테스트fffffffffasfasdfdasfa"
+        cell.titleLabel.text = viewModel.tagList[indexPath.row].title
         return cell
     }
 }

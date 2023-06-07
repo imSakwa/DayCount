@@ -50,6 +50,10 @@ final class TagInputView: UIView {
         tagCollectionView.dataSource = delegate
     }
     
+    func setupTagTextFieldDelegate(_ delegate: UITextFieldDelegate) {
+        tagTextField.delegate = delegate
+    }
+    
     private func initView() {
         setupSubviews()
         setupLayouts()
@@ -73,5 +77,9 @@ final class TagInputView: UIView {
             $0.leading.trailing.equalToSuperview()
             $0.height.lessThanOrEqualTo(200)
         }
+    }
+    
+    func reloadCollectionView() {
+        tagCollectionView.reloadData()
     }
 }
