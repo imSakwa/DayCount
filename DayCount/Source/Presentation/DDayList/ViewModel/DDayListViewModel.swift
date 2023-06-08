@@ -43,7 +43,6 @@ extension DDayListViewModel {
     
     func addDDayItem(item: DDay) {
         ddayList.append(item)
-        
         ddayUseCase.addDDay(item: item)
     }
     

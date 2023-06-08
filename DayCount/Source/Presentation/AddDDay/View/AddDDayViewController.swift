@@ -16,7 +16,7 @@ final class AddDDayViewController: UIViewController {
     private var titles: [String] = []
     private var dates: [String] = []
     
-    private let viewModel = AddDDayViewModel()
+    private let viewModel: AddDDayViewModel
     private var cancellables = Set<AnyCancellable>()
     var addItemHandler: ((DDay) -> Void)?
     
@@ -63,6 +63,17 @@ final class AddDDayViewController: UIViewController {
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         view.endEditing(true)
+    }
+    
+    // MARK: Initializers
+    init(viewModel: AddDDayViewModel) {
+        self.viewModel = viewModel
+        
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
     
     // MARK: View LifeCycle
@@ -118,6 +129,13 @@ extension AddDDayViewController {
                 self?.dismiss(animated: true)
             }
             .store(in: &cancellables)
+        
+        output.tagItem
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] tagList in
+                self?.viewModel.addTag(tagList: tagList)
+            }
+            .store(in: &cancellables)
 
     }
  
@@ -147,7 +165,7 @@ extension AddDDayViewController {
         tagInputView.snp.makeConstraints {
             $0.top.equalTo(dateStackView.snp.bottom).offset(30)
             $0.directionalHorizontalEdges.size.equalTo(titleTextField)
-            $0.height.equalTo(500)
+//            $0.height.equalTo(500)
         }
         
         addButton.snp.makeConstraints {
@@ -190,6 +208,7 @@ extension AddDDayViewController: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         
         if viewModel.tagList.count < 3 {
+            
             viewModel.tagList.append(Tag(title: textField.text!))
             tagInputView.reloadCollectionView()
         }
