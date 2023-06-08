@@ -226,11 +226,16 @@ extension DDayListViewController {
 // MARK: - AddButtonDelegate
 extension DDayListViewController: ListSettingDelegate {
     func addButtonTap() {
-        let addItemVC = AddDDayViewController()
+        let repository = TagRepository()
+        let usecase = TagUsecase(repository: repository)
+        let addDDayViewModel = AddDDayViewModel(usecase: usecase)
+        let addItemVC = AddDDayViewController(viewModel: addDDayViewModel)
+        
         addItemVC.addItemHandler = { [weak self] item in
             self?.viewModel.addDDayItem(item: item)
             self?.setupSnapshot()
         }
+        
         present(addItemVC, animated: true)
     }
     

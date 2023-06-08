@@ -13,7 +13,14 @@ final class AddDDayViewModel: ViewModelType {
     
     private var cancellables = Set<AnyCancellable>()
     private let ddayList: DDayList = DDayList()
-    var tagList: [Tag] = [Tag]()
+    var tagList: TagList = []
+    private let tagUsecase: TagUsecaseProtocol
+    
+    // MARK: Initializers
+    
+    init(usecase: TagUsecaseProtocol) {
+        tagUsecase = usecase
+    }
     
     // MARK: Input & Output
     
@@ -27,6 +34,7 @@ final class AddDDayViewModel: ViewModelType {
     struct Output {
         let enableSaveButton: AnyPublisher<Bool, Never>
         let ddayItem: AnyPublisher<DDay, Never>
+        let tagItem: AnyPublisher<TagList, Never>
     }
 }
 
@@ -38,6 +46,7 @@ extension AddDDayViewModel {
         let dateSubject = CurrentValueSubject<String, Never>("")
         let isSwitchOnSubject = CurrentValueSubject<Bool, Never>(false)
         let ddaySubject = PassthroughSubject<DDay, Never>()
+        let tagSubject = PassthroughSubject<TagList, Never>()
         
         input.titleStr
             .sink {
@@ -78,14 +87,21 @@ extension AddDDayViewModel {
                                 date: dateSubject.value,
                                 isSwitchOn: isSwitchOnSubject.value)
                 
+                tagSubject.send(self.tagList)
                 ddaySubject.send(dday)
             })
             .store(in: &cancellables)
         
         return Output(
             enableSaveButton: enableButton,
-            ddayItem: ddaySubject.eraseToAnyPublisher()
-//            tapDoneButton: tapDoneButton
+            ddayItem: ddaySubject.eraseToAnyPublisher(),
+            tagItem: tagSubject.eraseToAnyPublisher()
         )
+    }
+    
+    func addTag(tagList: TagList) {
+        tagList.forEach { tag in
+            tagUsecase.addTag(tag: tag)
+        }
     }
 }
