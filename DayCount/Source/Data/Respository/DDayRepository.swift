@@ -12,6 +12,8 @@ protocol DDayRepositoryProtocol {
     func fetchDDay() -> DDayList?
     func saveDDay(item: DDay)
     func removeDDay(item: DDay)
+    
+    func fetchTag() -> [Tag]?
 }
 
 final class DDayRepository: DDayRepositoryProtocol {
@@ -71,6 +73,25 @@ extension DDayRepository {
             try context.save()
         } catch {
             print(error.localizedDescription)
+        }
+    }
+    
+    func fetchTag() -> [Tag]? {
+        let context = CoreDataManager.shared.managedObjectContext
+            
+        do {
+            let tag = try context.fetch(TagModel.fetchRequest()) as! [TagModel]
+            var tagList = TagList()
+
+            for model in tag {
+                tagList.append(Tag(title: model.title!))
+            }
+            
+            return tagList
+            
+        } catch {
+            print(error.localizedDescription)
+            return nil
         }
     }
 }

@@ -11,6 +11,8 @@ protocol DDayUseCaseProtocol {
     func addDDay(item: DDay)
     func getDDay() -> DDayList?
     func removeDDay(item: DDay)
+    
+    func fetchTagList() -> TagList?
 }
 
 final class DDayUseCase: DDayUseCaseProtocol {
@@ -32,5 +34,9 @@ extension DDayUseCase {
     
     func removeDDay(item: DDay) {
         ddayRespository.removeDDay(item: item)
+    }
+    
+    func fetchTagList() -> TagList? {
+        return ddayRespository.fetchTag()
     }
 }
