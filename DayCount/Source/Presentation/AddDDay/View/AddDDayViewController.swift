@@ -208,9 +208,10 @@ extension AddDDayViewController: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         
         if viewModel.tagList.count < 3 {
-            
             viewModel.tagList.append(Tag(title: textField.text!))
             tagInputView.reloadCollectionView()
+            
+            textField.text = ""
         }
         
         return true
