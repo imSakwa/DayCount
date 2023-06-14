@@ -109,6 +109,8 @@ extension DDayListViewController {
     }
     
     private func setupTagScrollView() {
+        viewModel.fetchTagList()
+        
         tagScrollView.setupContent(with: viewModel.getTagList())
         tagScrollView.setupTagButtonDelegate(self)
     }
@@ -233,7 +235,12 @@ extension DDayListViewController: ListSettingDelegate {
         
         addItemVC.addItemHandler = { [weak self] item in
             self?.viewModel.addDDayItem(item: item)
+            self?.viewModel.fetchTagList()
+        
             self?.setupSnapshot()
+            if let tagList = self?.viewModel.getTagList() {
+                self?.tagScrollView.setupContent(with: tagList)
+            }
         }
         
         present(addItemVC, animated: true)

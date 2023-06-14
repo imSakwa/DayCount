@@ -57,6 +57,12 @@ extension DDayListViewModel {
         }
     }
     
+    func fetchTagList() {
+        if let tagList = ddayUseCase.fetchTagList() {
+            self.tagList = tagList
+        }
+    }
+    
     func initDDayArray(array: [DDay]) {
         ddayList = array
     }
