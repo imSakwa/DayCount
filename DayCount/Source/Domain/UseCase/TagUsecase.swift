@@ -22,7 +22,11 @@ final class TagUsecase: TagUsecaseProtocol {
     
     // MARK: Methods
     func addTag(tag: Tag) {
-        tagRepository.saveTag(tag: tag)
+        if let tagList = tagRepository.fetchTag() {
+            if tagList.contains(where: { $0.title == tag.title }) == false {
+                tagRepository.saveTag(tag: tag)
+            }
+        }
     }
     
     func fetchTagList() -> TagList? {
