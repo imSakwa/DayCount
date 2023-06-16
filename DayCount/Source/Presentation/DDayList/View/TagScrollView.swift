@@ -61,6 +61,10 @@ final class TagScrollView: UIScrollView {
     }
     
     func setupContent(with tagList: TagList) {
+        tagStackView.subviews.forEach {
+            $0.removeFromSuperview()
+        }
+        
         tagList.forEach {
             let tagButton = TagButton()
             tagButton.setupContent(with: $0)
