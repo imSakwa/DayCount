@@ -8,7 +8,7 @@
 import Foundation
 import CoreData
 
-struct Tag: Hashable {
+struct Tag: Hashable, Codable {
     var title: String
     
     init(title: String) {
