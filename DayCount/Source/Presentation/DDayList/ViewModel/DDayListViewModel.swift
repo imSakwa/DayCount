@@ -66,13 +66,15 @@ extension DDayListViewModel {
     func initDDayArray(array: [DDay]) {
         ddayList = array
     }
-    
-    func getDDayItem(row: Int) -> DDay {
-        return ddayList[row]
-    }
-    
+        
     func getDDayList() -> DDayList {
         return ddayList
+    }
+    
+    func getFilteredDDayList(with tag: String) -> DDayList {
+        fetchDDayList()
+        
+        return ddayList.filter { $0.tags.contains(where: { $0.title == tag }) }
     }
     
     func getTagList() -> TagList {
