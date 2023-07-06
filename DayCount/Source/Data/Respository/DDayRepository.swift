@@ -29,7 +29,10 @@ extension DDayRepository {
             var list = DDayList()
             
             for model in dday {
-                list.append(DDay(title: model.title!, date: model.date!, isSwitchOn: model.isSwitchOn))
+                var tags: [Tag] = []
+                model.tags.forEach { tags.append(Tag(title: $0)) }
+                
+                list.append(DDay(title: model.title!, date: model.date!, isSwitchOn: model.isSwitchOn, tags: tags))
             }
             
             return list
@@ -49,6 +52,12 @@ extension DDayRepository {
             dday.setValue(item.title, forKey: "title")
             dday.setValue(item.date, forKey: "date")
             dday.setValue(item.isSwitchOn, forKey: "isSwitchOn")
+            
+            var tagList: [String] = []
+            item.tags.forEach {
+                tagList.append($0.title)
+            }
+            dday.setValue(tagList, forKey: "tags")
         }
         
         do {

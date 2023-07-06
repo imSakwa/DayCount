@@ -83,9 +83,12 @@ extension AddDDayViewModel {
         
         input.tapDone
             .sink(receiveValue: { _ in
-                let dday = DDay(title: titleSubject.value,
-                                date: dateSubject.value,
-                                isSwitchOn: isSwitchOnSubject.value)
+                let dday = DDay(
+                    title: titleSubject.value,
+                    date: dateSubject.value,
+                    isSwitchOn: isSwitchOnSubject.value,
+                    tags: self.tagList
+                )
                 
                 tagSubject.send(self.tagList)
                 ddaySubject.send(dday)
