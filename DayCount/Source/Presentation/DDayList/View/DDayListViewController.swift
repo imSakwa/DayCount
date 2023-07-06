@@ -172,7 +172,7 @@ extension DDayListViewController {
     private func setupCollectionViewDataSource() {
         ddayDataSource = UICollectionViewDiffableDataSource<Section, DDay> (
             collectionView: itemCollectionView,
-            cellProvider: { (collectionView, indexPath, itemIdentifier) -> UICollectionViewCell? in
+            cellProvider: { (collectionView, indexPath, ddayItem) -> UICollectionViewCell? in
                 
                 guard let cell = collectionView.dequeueReusableCell(
                     withReuseIdentifier: DDayCell.identifier,
@@ -181,7 +181,7 @@ extension DDayListViewController {
                 
                 cell.setupContentView(
                     type: self.currentCellType,
-                    dday: self.viewModel.getDDayItem(row: indexPath.row)
+                    dday: ddayItem
                 )
                 
                 return cell
@@ -195,6 +195,13 @@ extension DDayListViewController {
         var snapShot = NSDiffableDataSourceSnapshot<Section, DDay>()
         snapShot.appendSections([.main])
         snapShot.appendItems(viewModel.getDDayList())
+        ddayDataSource.apply(snapShot)
+    }
+    
+    private func filtered(with tagTitle: String) {
+        var snapShot = NSDiffableDataSourceSnapshot<Section, DDay>()
+        snapShot.appendSections([.main])
+        snapShot.appendItems(viewModel.getFilteredDDayList(with: tagTitle))
         ddayDataSource.apply(snapShot)
     }
     
@@ -240,6 +247,7 @@ extension DDayListViewController: ListSettingDelegate {
             self?.setupSnapshot()
             if let tagList = self?.viewModel.getTagList() {
                 self?.tagScrollView.setupContent(with: tagList)
+                self?.tagScrollView.setupTagButtonDelegate(self!)
             }
         }
         
@@ -273,7 +281,7 @@ extension DDayListViewController: ListSettingDelegate {
 // MARK: - TagButtonDelegate
 extension DDayListViewController: TagButtonDelegate {
     func tagButtonTap(tagTitle: String) {
-        print("tap \(tagTitle)")
+        filtered(with: tagTitle)
     }
 }
 
