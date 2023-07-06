@@ -29,6 +29,7 @@ final class ListSettingView: UIView {
         let image = UIImage(systemName: "plus.circle",
                             withConfiguration: imageConig)
         button.setImage(image, for: .normal)
+        button.tintColor = .black
         return button
     }()
     
@@ -38,6 +39,7 @@ final class ListSettingView: UIView {
         let image = UIImage(systemName: "ellipsis.circle",
                             withConfiguration: imageConig)
         button.setImage(image, for: .normal)
+        button.tintColor = .black
         return button
     }()
     
@@ -76,6 +78,7 @@ extension ListSettingView {
     private func setupLayouts() {
         rightStackView.snp.makeConstraints {
             $0.trailing.equalToSuperview().inset(8)
+            $0.centerY.equalToSuperview()
             $0.height.equalTo(24)
         }
                 
