@@ -152,25 +152,26 @@ extension AddDDayViewController {
         
         titleTextField.snp.makeConstraints {
             $0.centerX.equalToSuperview()
-            $0.top.equalTo(view.safeAreaLayoutGuide).offset(200)
+            $0.top.equalTo(view.safeAreaLayoutGuide).offset(44)
             $0.width.equalToSuperview().dividedBy(1.2)
-            $0.height.equalToSuperview().dividedBy(24)
+            $0.height.equalTo(36)
         }
         
         dateStackView.snp.makeConstraints {
             $0.top.equalTo(titleTextField.snp.bottom).offset(45)
             $0.directionalHorizontalEdges.size.equalTo(titleTextField)
+            $0.height.equalTo(36)
         }
         
         tagInputView.snp.makeConstraints {
             $0.top.equalTo(dateStackView.snp.bottom).offset(30)
             $0.directionalHorizontalEdges.size.equalTo(titleTextField)
-//            $0.height.equalTo(500)
+            $0.height.equalTo(36)
         }
         
         addButton.snp.makeConstraints {
             $0.top.equalTo(tagInputView.snp.bottom).offset(100)
-            $0.width.equalTo(150)
+            $0.directionalHorizontalEdges.size.equalTo(titleTextField)
             $0.centerX.equalToSuperview()
         }
     }
