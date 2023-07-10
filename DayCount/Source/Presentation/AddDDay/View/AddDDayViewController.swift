@@ -83,6 +83,7 @@ final class AddDDayViewController: UIViewController {
         
         setupView()
         setupLayout()
+        addObserver()
         setupDateStackView()
         setupTagInputView()
         bind()
@@ -103,6 +104,43 @@ extension AddDDayViewController {
         tagInputView.setupTagCollectionViewDelegateFlowLayout(self)
         tagInputView.setupTagCollectionViewDataSource(self)
         tagInputView.setupTagTextFieldDelegate(self)
+    }
+    
+    private func addObserver() {
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(keyboardWillShow),
+            name: UIResponder.keyboardWillShowNotification,
+            object: nil
+        )
+        
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(keyboardWillHide),
+            name: UIResponder.keyboardWillHideNotification,
+            object: nil
+        )
+    }
+    
+    @objc private func keyboardWillShow(notification: Notification) {
+        if let keyboardFrame = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue {
+            let keyboardRect = keyboardFrame.cgRectValue
+            let keyboardHeight = keyboardRect.height
+            
+            addButton.snp.remakeConstraints {
+                $0.bottom.equalTo(view.layoutMarginsGuide).inset(keyboardHeight + 12)
+                $0.directionalHorizontalEdges.size.equalTo(titleTextField)
+                $0.centerX.equalToSuperview()
+            }
+        }
+    }
+    
+    @objc private func keyboardWillHide(notification: Notification) {
+            addButton.snp.remakeConstraints {
+                $0.bottom.equalTo(view.layoutMarginsGuide).inset(44)
+                $0.directionalHorizontalEdges.size.equalTo(titleTextField)
+                $0.centerX.equalToSuperview()
+            }
     }
     
     private func bind() {
@@ -170,7 +208,7 @@ extension AddDDayViewController {
         }
         
         addButton.snp.makeConstraints {
-            $0.top.equalTo(tagInputView.snp.bottom).offset(100)
+            $0.bottom.equalTo(view.safeAreaLayoutGuide).inset(44)
             $0.directionalHorizontalEdges.size.equalTo(titleTextField)
             $0.centerX.equalToSuperview()
         }
