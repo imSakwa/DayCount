@@ -101,7 +101,6 @@ extension AddDDayViewController {
     }
     
     private func setupTagInputView() {
-        tagInputView.setupTagCollectionViewDelegateFlowLayout(self)
         tagInputView.setupTagCollectionViewDataSource(self)
         tagInputView.setupTagTextFieldDelegate(self)
     }
@@ -203,8 +202,8 @@ extension AddDDayViewController {
         
         tagInputView.snp.makeConstraints {
             $0.top.equalTo(dateStackView.snp.bottom).offset(30)
-            $0.directionalHorizontalEdges.size.equalTo(titleTextField)
-            $0.height.equalTo(36)
+            $0.directionalHorizontalEdges.width.equalTo(titleTextField)
+            $0.bottom.equalTo(addButton.snp.top).offset(-30)
         }
         
         addButton.snp.makeConstraints {
@@ -257,18 +256,7 @@ extension AddDDayViewController: UITextFieldDelegate {
     }
 }
 
-// MARK: - UICollectionViewDelegateFlowLayout
-extension AddDDayViewController: UICollectionViewDelegateFlowLayout {
-    func collectionView(
-        _ collectionView: UICollectionView,
-        layout collectionViewLayout: UICollectionViewLayout,
-        sizeForItemAt indexPath: IndexPath
-    ) -> CGSize {
-        
-        return CGSize(width: 100, height: 30)
-    }
-}
-
+// MARK: - UICollectionViewDataSource
 extension AddDDayViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return viewModel.tagList.count
@@ -280,7 +268,17 @@ extension AddDDayViewController: UICollectionViewDataSource {
         }
         
         cell.titleLabel.text = viewModel.tagList[indexPath.row].title
+        cell.index = indexPath.row
+        cell.delegate = self
         return cell
+    }
+}
+
+// MARK: - TagCollectionCellDelegate
+extension AddDDayViewController: TagCollectionCellDelegate {
+    func tapCancelButton(index: Int) {
+        viewModel.tagList.remove(at: index)
+        tagInputView.reloadCollectionView()
     }
 }
 

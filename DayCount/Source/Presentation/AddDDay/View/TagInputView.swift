@@ -21,7 +21,8 @@ final class TagInputView: UIView {
     private let tagCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.minimumLineSpacing = 3
-        layout.minimumInteritemSpacing = 3
+        layout.minimumInteritemSpacing = 8
+        layout.estimatedItemSize =  UICollectionViewFlowLayout.automaticSize
         let view = UICollectionView(frame: .zero, collectionViewLayout: layout)
         view.isScrollEnabled = false
         view.register(TagCollectionCell.self, forCellWithReuseIdentifier: TagCollectionCell.identifier)
@@ -37,14 +38,9 @@ final class TagInputView: UIView {
     
     required init?(coder: NSCoder) {
         super.init(coder: coder)
-        
-        initView()
     }
     
     // MARK: Methods
-    func setupTagCollectionViewDelegateFlowLayout(_ delegate: UICollectionViewDelegate) {
-        tagCollectionView.delegate = delegate
-    }
     
     func setupTagCollectionViewDataSource(_ delegate: UICollectionViewDataSource) {
         tagCollectionView.dataSource = delegate
@@ -74,8 +70,7 @@ final class TagInputView: UIView {
         
         tagCollectionView.snp.makeConstraints {
             $0.top.equalTo(tagTextField.snp.bottom)
-            $0.leading.trailing.equalToSuperview()
-            $0.height.lessThanOrEqualTo(200)
+            $0.leading.trailing.bottom.equalToSuperview()
         }
     }
     
