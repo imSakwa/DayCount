@@ -17,10 +17,10 @@ final class TagCollectionCell: UICollectionViewCell {
     static let identifier = String(describing: TagCollectionCell.self)
     
     weak var delegate: TagCollectionCellDelegate?
-    var index: Int!
+    private var index: Int!
     
     // MARK: Properties
-    let titleLabel: UILabel = {
+    private let titleLabel: UILabel = {
         let view = UILabel(frame: .zero)
         view.font = .systemFont(ofSize: 14)
         view.textColor = .black
@@ -47,6 +47,11 @@ final class TagCollectionCell: UICollectionViewCell {
     
     required init?(coder: NSCoder) {
         super.init(coder: coder)
+    }
+    
+    func configureCell(text: String, index: Int) {
+        titleLabel.text = text
+        self.index = index
     }
     
     // MARK: Methods

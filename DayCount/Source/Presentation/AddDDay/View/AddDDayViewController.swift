@@ -232,19 +232,8 @@ extension AddDDayViewController: DatePickerDelegate {
 }
 
 // MARK: - UITextField Delegate
-
 extension AddDDayViewController: UITextFieldDelegate {
-//    func textField(
-//        _ textField: UITextField,
-//        shouldChangeCharactersIn range: NSRange,
-//        replacementString string: String
-//    ) -> Bool {
-//
-//        return (textField == dateTextField) == false
-//    }
-    
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        
         if viewModel.tagList.count < 3 {
             viewModel.tagList.append(Tag(title: textField.text!))
             tagInputView.reloadCollectionView()
@@ -267,9 +256,9 @@ extension AddDDayViewController: UICollectionViewDataSource {
             return UICollectionViewCell()
         }
         
-        cell.titleLabel.text = viewModel.tagList[indexPath.row].title
-        cell.index = indexPath.row
+        cell.configureCell(text: viewModel.tagList[indexPath.row].title, index: indexPath.row)
         cell.delegate = self
+        
         return cell
     }
 }
