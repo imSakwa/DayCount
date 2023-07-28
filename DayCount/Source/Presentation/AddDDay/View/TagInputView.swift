@@ -19,10 +19,7 @@ final class TagInputView: UIView {
     }()
     
     private let tagCollectionView: UICollectionView = {
-        let layout = UICollectionViewFlowLayout()
-        layout.minimumLineSpacing = 3
-        layout.minimumInteritemSpacing = 8
-        layout.estimatedItemSize =  UICollectionViewFlowLayout.automaticSize
+        let layout = LeftAlignCollectionViewFlowLayout()
         let view = UICollectionView(frame: .zero, collectionViewLayout: layout)
         view.isScrollEnabled = false
         view.register(TagCollectionCell.self, forCellWithReuseIdentifier: TagCollectionCell.identifier)
