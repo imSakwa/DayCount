@@ -93,16 +93,28 @@ extension DDayCell {
     
     private func setupListType(with dday: DDay) {
         dateInfoView.setupDateInfo(with: dday)
-        
+        updateLayoutForListType()
     }
     
     private func setupSquareType(with dday: DDay) {
         dateInfoView.setupDateInfo(with: dday)
-        
-        updateLayout()
+        updateLayoutForSqueareType()
     }
     
-    private func updateLayout() {
+    private func updateLayoutForListType() {
+        titleLabel.snp.remakeConstraints {
+            $0.directionalVerticalEdges.equalToSuperview().inset(5)
+            $0.leading.equalToSuperview().inset(8)
+            $0.trailing.equalTo(dateInfoView.snp.leading)
+        }
+
+        dateInfoView.snp.remakeConstraints {
+            $0.directionalVerticalEdges.equalToSuperview()
+            $0.trailing.equalToSuperview().inset(8)
+        }
+    }
+    
+    private func updateLayoutForSqueareType() {
         titleLabel.snp.remakeConstraints {
             $0.directionalHorizontalEdges.equalToSuperview().inset(8)
             $0.top.equalToSuperview().inset(8)
@@ -115,6 +127,4 @@ extension DDayCell {
             $0.bottom.equalToSuperview().inset(8)
         }
     }
-    
-
 }
