@@ -58,8 +58,9 @@ extension DDayListViewModel {
     }
     
     func fetchTagList() {
-        if let tagList = ddayUseCase.fetchTagList() {
-            self.tagList = tagList
+        if let fetchedtagList = ddayUseCase.fetchTagList() {
+            tagList = fetchedtagList
+            tagList.insert(Tag(title: "전체"), at: 0)
         }
     }
     
@@ -73,7 +74,9 @@ extension DDayListViewModel {
     
     func getFilteredDDayList(with tag: String) -> DDayList {
         fetchDDayList()
-        
+        if tag == "전체" {
+            return ddayList
+        }
         return ddayList.filter { $0.tags.contains(where: { $0.title == tag }) }
     }
     
