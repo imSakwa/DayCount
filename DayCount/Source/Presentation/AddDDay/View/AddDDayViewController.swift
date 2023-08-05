@@ -166,14 +166,6 @@ extension AddDDayViewController {
                 self?.dismiss(animated: true)
             }
             .store(in: &cancellables)
-        
-        output.tagItem
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] tagList in
-                self?.viewModel.addTag(tagList: tagList)
-            }
-            .store(in: &cancellables)
-
     }
  
     @objc private func addButtonTouched(_ sender: UIButton) {
@@ -235,7 +227,7 @@ extension AddDDayViewController: DatePickerDelegate {
 extension AddDDayViewController: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         if viewModel.tagList.count < 3 {
-            viewModel.tagList.append(Tag(title: textField.text!))
+            viewModel.addTag(title: textField.text!)
             tagInputView.reloadCollectionView()
             
             textField.text = ""
@@ -266,7 +258,7 @@ extension AddDDayViewController: UICollectionViewDataSource {
 // MARK: - TagCollectionCellDelegate
 extension AddDDayViewController: TagCollectionCellDelegate {
     func tapCancelButton(index: Int) {
-        viewModel.tagList.remove(at: index)
+        viewModel.removeTag(at: index)
         tagInputView.reloadCollectionView()
     }
 }

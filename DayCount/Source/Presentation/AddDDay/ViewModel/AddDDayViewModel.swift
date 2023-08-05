@@ -13,7 +13,7 @@ final class AddDDayViewModel: ViewModelType {
     
     private var cancellables = Set<AnyCancellable>()
     private let ddayList: DDayList = DDayList()
-    var tagList: TagList = []
+    private(set) var tagList: TagList = []
     private let tagUsecase: TagUsecaseProtocol
     
     // MARK: Initializers
@@ -34,19 +34,17 @@ final class AddDDayViewModel: ViewModelType {
     struct Output {
         let enableSaveButton: AnyPublisher<Bool, Never>
         let ddayItem: AnyPublisher<DDay, Never>
-        let tagItem: AnyPublisher<TagList, Never>
     }
 }
 
 // MARK: - Methods
 
 extension AddDDayViewModel {
-    func transform(input: Input) -> Output {
+    public func transform(input: Input) -> Output {
         let titleSubject = CurrentValueSubject<String, Never>("")
         let dateSubject = CurrentValueSubject<String, Never>("")
         let isSwitchOnSubject = CurrentValueSubject<Bool, Never>(false)
         let ddaySubject = PassthroughSubject<DDay, Never>()
-        let tagSubject = PassthroughSubject<TagList, Never>()
         
         input.titleStr
             .sink {
@@ -55,7 +53,6 @@ extension AddDDayViewModel {
             .store(in: &cancellables)
         
         input.dateStr
-            .print("Date: ")
             .sink {
                 dateSubject.send($0)
             }
@@ -82,29 +79,38 @@ extension AddDDayViewModel {
             .eraseToAnyPublisher()
         
         input.tapDone
-            .sink(receiveValue: { _ in
-                let dday = DDay(
+            .map {
+                return DDay(
                     title: titleSubject.value,
                     date: dateSubject.value,
                     isSwitchOn: isSwitchOnSubject.value,
                     tags: self.tagList
                 )
-                
-                tagSubject.send(self.tagList)
+            }
+            .sink(receiveValue: { dday in
                 ddaySubject.send(dday)
+                self.saveTags(tagList: self.tagList)
             })
             .store(in: &cancellables)
         
         return Output(
             enableSaveButton: enableButton,
-            ddayItem: ddaySubject.eraseToAnyPublisher(),
-            tagItem: tagSubject.eraseToAnyPublisher()
+            ddayItem: ddaySubject.eraseToAnyPublisher()
         )
     }
     
-    func addTag(tagList: TagList) {
+    private func saveTags(tagList: TagList) {
         tagList.forEach { tag in
             tagUsecase.addTag(tag: tag)
         }
+    }
+
+    public func addTag(title: String) {
+        let newTag = Tag(title: title)
+        tagList.append(newTag)
+    }
+    
+    public func removeTag(at index: Int) {
+        tagList.remove(at: index)
     }
 }
