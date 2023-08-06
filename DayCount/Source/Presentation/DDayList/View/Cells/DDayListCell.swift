@@ -13,10 +13,10 @@ enum Section: CaseIterable {
     case main
 }
 
-final class DDayCell: UICollectionViewCell {
+final class DDayListCell: UICollectionViewListCell {
     // MARK: Properties
     
-    static let identifier = String(describing: DDayCell.self)
+    static let identifier = String(describing: DDayListCell.self)
         
     private let titleLabel: UILabel = {
         let label = UILabel(frame: .zero)
@@ -39,22 +39,20 @@ final class DDayCell: UICollectionViewCell {
     
     required init?(coder: NSCoder) {
         super.init(coder: coder)
-        
-        initView()
     }
 }
 
 // MARK: - Methods
 
-extension DDayCell {
+extension DDayListCell {
     
     private func initView() {
-        setupBaseView()
+        setupView()
         setupSubviews()
         setupLayouts()
     }
     
-    private func setupBaseView() {
+    private func setupView() {
         contentView.backgroundColor = .systemGray6
         contentView.layer.borderColor = UIColor.systemGray.cgColor
         contentView.layer.borderWidth = 3.0
@@ -120,7 +118,7 @@ extension DDayCell {
             $0.top.equalToSuperview().inset(8)
             $0.bottom.equalTo(contentView.snp.centerY)
         }
-        
+
         dateInfoView.snp.remakeConstraints {
             $0.top.equalTo(contentView.snp.centerY)
             $0.directionalHorizontalEdges.equalToSuperview().inset(8)

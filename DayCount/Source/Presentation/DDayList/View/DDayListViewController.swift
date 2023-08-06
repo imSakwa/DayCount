@@ -18,7 +18,8 @@ final class DDayListViewController: UIViewController {
     
     private var cancellables = Set<AnyCancellable>()
     
-    private var ddayDataSource: UICollectionViewDiffableDataSource<Section, DDay>!
+    typealias DDayDataSource = UICollectionViewDiffableDataSource<Section, DDay>
+    private lazy var ddayDataSource: DDayDataSource = setupCollectionViewDataSource()
     private let viewModel: DDayListViewModel
     private var currentCellType: DDayCellStyleType = .list
            
@@ -34,10 +35,9 @@ final class DDayListViewController: UIViewController {
     
     private lazy var itemCollectionView: UICollectionView = {
         let compositionalLayout = getCellType()
-        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: compositionalLayout)
-        collectionView.register(
-            DDayCell.self,
-            forCellWithReuseIdentifier: DDayCell.identifier
+        let collectionView = UICollectionView(
+            frame: .zero,
+            collectionViewLayout: compositionalLayout
         )
         return collectionView
     }()
@@ -73,7 +73,6 @@ extension DDayListViewController {
         
         setupTagScrollView()
         setupListSettingView()
-        setupCollectionViewDataSource()
         setupSnapshot()
 
         bind()
@@ -169,24 +168,23 @@ extension DDayListViewController {
         return layout
     }
     
-    private func setupCollectionViewDataSource() {
-        ddayDataSource = UICollectionViewDiffableDataSource<Section, DDay> (
+    private func setupCollectionViewDataSource() -> DDayDataSource {
+        let listStyleCell = UICollectionView.CellRegistration<DDayListCell, DDay> { (cell, index, dday) in
+            cell.setupContentView(type: self.currentCellType,dday: dday)
+        }
+        
+        let dataSource = UICollectionViewDiffableDataSource<Section, DDay> (
             collectionView: itemCollectionView,
-            cellProvider: { (collectionView, indexPath, ddayItem) -> UICollectionViewCell? in
+            cellProvider: { (collectionView, indexPath, dday) -> UICollectionViewCell? in
                 
-                guard let cell = collectionView.dequeueReusableCell(
-                    withReuseIdentifier: DDayCell.identifier,
-                    for: indexPath
-                ) as? DDayCell else { return nil }
-                
-                cell.setupContentView(
-                    type: self.currentCellType,
-                    dday: ddayItem
+                return collectionView.dequeueConfiguredReusableCell(
+                    using: listStyleCell,
+                    for: indexPath,
+                    item: dday
                 )
-                
-                return cell
             }
         )
+        return dataSource
     }
     
     private func setupSnapshot() {
@@ -208,7 +206,7 @@ extension DDayListViewController {
     private func bind(){
         let input = DDayListViewModel.Input()
         
-        let output = viewModel.transform(input: input)
+        let _ = viewModel.transform(input: input)
     }
     
     private func changeCellStyle(style: DDayCellStyleType) {
